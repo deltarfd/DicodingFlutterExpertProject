@@ -316,6 +316,7 @@ class _DetailContent extends StatelessWidget {
             foregroundColor: Colors.white,
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
+              tooltip: 'Back',
               onPressed: () => Navigator.pop(context),
             ),
           ),
