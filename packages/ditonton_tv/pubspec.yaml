@@ -1,0 +1,33 @@
+name: ditonton_tv
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  bloc: ^9.1.0
+  provider: ^6.1.2
+  flutter_rating_bar: ^4.0.1
+  dartz: ^0.10.1
+  http: ^1.2.2
+  equatable: ^2.0.5
+  shared_preferences: ^2.2.3
+  ditonton_core:
+    path: ../ditonton_core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.3
+  mockito: ^5.0.8
+  build_runner: ^2.4.12
+
+
+flutter:
+  uses-material-design: false

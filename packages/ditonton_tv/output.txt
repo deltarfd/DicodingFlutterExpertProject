@@ -1,0 +1,270 @@
+﻿00:00 +0: loading C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart
+00:00 +0 -1: loading C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart [E]
+  Failed to load "C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart":
+  Compilation failed for testPath=C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart: test/presentation/pages/tv_detail_page_test.dart:6:8: Error: Error when reading 'lib/features/tv/domain/entities/season.dart': The system cannot find the file specified.
+  
+  import 'package:ditonton_tv/features/tv/domain/entities/season.dart';
+         ^
+  lib/features/tv/presentation/bloc/tv_detail_event.dart:1:1: Error: This part doesn't have a containing library.
+  Try removing the 'part of' declaration.
+  part of 'tv_detail_bloc.dart';
+  ^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:1:1: Error: This part doesn't have a containing library.
+  Try removing the 'part of' declaration.
+  part of 'tv_detail_bloc.dart';
+  ^
+  test/presentation/pages/tv_detail_page_test.dart:12:1: Error: Can't import 'lib/features/tv/presentation/bloc/tv_detail_event.dart', because it has a 'part of' declaration.
+  Try removing the 'part of' declaration, or using 'lib/features/tv/presentation/bloc/tv_detail_event.dart' as a part.
+  import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_event.dart';
+  ^
+  test/presentation/pages/tv_detail_page_test.dart:13:1: Error: Can't import 'lib/features/tv/presentation/bloc/tv_detail_state.dart', because it has a 'part of' declaration.
+  Try removing the 'part of' declaration, or using 'lib/features/tv/presentation/bloc/tv_detail_state.dart' as a part.
+  import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart';
+  ^
+  test/presentation/pages/tv_detail_page_test.dart:26:36: Error: Type 'Mock' not found.
+  class MockTvDetailNotifier extends Mock implements TvDetailNotifier {}
+                                     ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:31:35: Error: Type 'Mock' not found.
+  class MockGetSeasonDetail extends Mock implements GetSeasonDetail {}
+                                    ^^^^
+  lib/features/tv/presentation/bloc/tv_detail_event.dart:3:38: Error: Type 'Equatable' not found.
+  abstract class TvDetailEvent extends Equatable {
+                                       ^^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:5:29: Error: Type 'Equatable' not found.
+  class TvDetailState extends Equatable {
+                              ^^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:7:9: Error: Type 'TvDetail' not found.
+    final TvDetail? detail;
+          ^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:8:14: Error: Type 'Tv' not found.
+    final List<Tv> recommendations;
+               ^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:30:5: Error: Type 'TvDetail' not found.
+      TvDetail? detail,
+      ^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:31:10: Error: Type 'Tv' not found.
+      List<Tv>? recommendations,
+           ^^
+  test/presentation/pages/tv_detail_page_test.dart:12:1: Error: 'TvDetailEvent' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_event.dart'.
+  import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_event.dart';
+  ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:13:1: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+  import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart';
+  ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:26:7: Error: The non-abstract class 'MockTvDetailNotifier' is missing implementations for these members:
+   - ChangeNotifier.addListener
+   - ChangeNotifier.dispose
+   - ChangeNotifier.hasListeners
+   - ChangeNotifier.notifyListeners
+   - ChangeNotifier.removeListener
+   - TvDetailNotifier.addWatchlist
+   - TvDetailNotifier.fetchSeasonEpisodes
+   - TvDetailNotifier.fetchTvDetail
+   - TvDetailNotifier.getSeasonDetail
+   - TvDetailNotifier.getTvDetail
+   - TvDetailNotifier.getTvRecommendations
+   - TvDetailNotifier.getWatchlistStatusTv
+   - TvDetailNotifier.isAddedToWatchlist
+   - TvDetailNotifier.loadWatchlistStatus
+   - TvDetailNotifier.message
+   - TvDetailNotifier.recommendationState
+   - TvDetailNotifier.recommendations
+   - TvDetailNotifier.removeFromWatchlist
+   - TvDetailNotifier.removeWatchlistTv
+   - TvDetailNotifier.saveWatchlistTv
+   - TvDetailNotifier.seasonEpisodes
+   - TvDetailNotifier.tv
+   - TvDetailNotifier.tvState
+   - TvDetailNotifier.watchlistMessage
+  Try to either
+   - provide an implementation,
+   - inherit an implementation from a superclass or mixin,
+   - mark the class as abstract, or
+   - provide a 'noSuchMethod' implementation.
+  
+  class MockTvDetailNotifier extends Mock implements TvDetailNotifier {}
+        ^^^^^^^^^^^^^^^^^^^^
+  ../../../Research/Flutter/flutter/packages/flutter/lib/src/foundation/change_notifier.dart:270:8: Context: 'ChangeNotifier.addListener' is defined here.
+    void addListener(VoidCallback listener) {
+         ^^^^^^^^^^^
+  ../../../Research/Flutter/flutter/packages/flutter/lib/src/foundation/change_notifier.dart:376:8: Context: 'ChangeNotifier.dispose' is defined here.
+    void dispose() {
+         ^^^^^^^
+  ../../../Research/Flutter/flutter/packages/flutter/lib/src/foundation/change_notifier.dart:211:12: Context: 'ChangeNotifier.hasListeners' is defined here.
+    bool get hasListeners => _count > 0;
+             ^^^^^^^^^^^^
+  ../../../Research/Flutter/flutter/packages/flutter/lib/src/foundation/change_notifier.dart:413:8: Context: 'ChangeNotifier.notifyListeners' is defined here.
+    void notifyListeners() {
+         ^^^^^^^^^^^^^^^
+  ../../../Research/Flutter/flutter/packages/flutter/lib/src/foundation/change_notifier.dart:340:8: Context: 'ChangeNotifier.removeListener' is defined here.
+    void removeListener(VoidCallback listener) {
+         ^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:89:16: Context: 'TvDetailNotifier.addWatchlist' is defined here.
+    Future<void> addWatchlist(TvDetail tv) async {
+                 ^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:125:16: Context: 'TvDetailNotifier.fetchSeasonEpisodes' is defined here.
+    Future<void> fetchSeasonEpisodes(int seasonNumber) async {
+                 ^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:55:16: Context: 'TvDetailNotifier.fetchTvDetail' is defined here.
+    Future<void> fetchTvDetail(int id) async {
+                 ^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:41:25: Context: 'TvDetailNotifier.getSeasonDetail' is defined here.
+    final GetSeasonDetail getSeasonDetail;
+                          ^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:17:21: Context: 'TvDetailNotifier.getTvDetail' is defined here.
+    final GetTvDetail getTvDetail;
+                      ^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:18:30: Context: 'TvDetailNotifier.getTvRecommendations' is defined here.
+    final GetTvRecommendations getTvRecommendations;
+                               ^^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:19:30: Context: 'TvDetailNotifier.getWatchlistStatusTv' is defined here.
+    final GetWatchlistStatusTv getWatchlistStatusTv;
+                               ^^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:53:12: Context: 'TvDetailNotifier.isAddedToWatchlist' is defined here.
+    bool get isAddedToWatchlist => _isAddedtoWatchlist;
+             ^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:119:16: Context: 'TvDetailNotifier.loadWatchlistStatus' is defined here.
+    Future<void> loadWatchlistStatus(int id) async {
+                 ^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:50:14: Context: 'TvDetailNotifier.message' is defined here.
+    String get message => _message;
+               ^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:47:20: Context: 'TvDetailNotifier.recommendationState' is defined here.
+    RequestState get recommendationState => _recommendationState;
+                     ^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:39:16: Context: 'TvDetailNotifier.recommendations' is defined here.
+    List<Tv> get recommendations => _recommendations;
+                 ^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:104:16: Context: 'TvDetailNotifier.removeFromWatchlist' is defined here.
+    Future<void> removeFromWatchlist(TvDetail tv) async {
+                 ^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:21:27: Context: 'TvDetailNotifier.removeWatchlistTv' is defined here.
+    final RemoveWatchlistTv removeWatchlistTv;
+                            ^^^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:20:25: Context: 'TvDetailNotifier.saveWatchlistTv' is defined here.
+    final SaveWatchlistTv saveWatchlistTv;
+                          ^^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:44:31: Context: 'TvDetailNotifier.seasonEpisodes' is defined here.
+    Map<int, List<Episode>> get seasonEpisodes => _seasonEpisodes;
+                                ^^^^^^^^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:33:16: Context: 'TvDetailNotifier.tv' is defined here.
+    TvDetail get tv => _tv;
+                 ^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:36:20: Context: 'TvDetailNotifier.tvState' is defined here.
+    RequestState get tvState => _tvState;
+                     ^^^^^^^
+  lib/features/tv/presentation/providers/tv_detail_notifier.dart:87:14: Context: 'TvDetailNotifier.watchlistMessage' is defined here.
+    String get watchlistMessage => _watchlistMessage;
+               ^^^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:31:7: Error: The non-abstract class 'MockGetSeasonDetail' is missing implementations for these members:
+   - GetSeasonDetail.execute
+   - GetSeasonDetail.repository
+  Try to either
+   - provide an implementation,
+   - inherit an implementation from a superclass or mixin,
+   - mark the class as abstract, or
+   - provide a 'noSuchMethod' implementation.
+  
+  class MockGetSeasonDetail extends Mock implements GetSeasonDetail {}
+        ^^^^^^^^^^^^^^^^^^^
+  lib/features/tv/domain/usecases/get_season_detail.dart:9:41: Context: 'GetSeasonDetail.execute' is defined here.
+    Future<Either<Failure, SeasonDetail>> execute(int tvId, int seasonNumber) =>
+                                          ^^^^^^^
+  lib/features/tv/domain/usecases/get_season_detail.dart:7:22: Context: 'GetSeasonDetail.repository' is defined here.
+    final TvRepository repository;
+                       ^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:49:5: Error: Method not found: 'when'.
+      when(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:97:5: Error: Method not found: 'when'.
+      when(() => mockTvDetailBloc.state).thenReturn(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:98:7: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(status: TvDetailStatus.loading),
+        ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:98:48: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(status: TvDetailStatus.loading),
+                                                 ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:109:5: Error: Method not found: 'when'.
+      when(() => mockTvDetailBloc.state).thenReturn(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:110:7: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(
+        ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:111:17: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          status: TvDetailStatus.error,
+                  ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:124:5: Error: Method not found: 'when'.
+      when(() => mockTvDetailBloc.state).thenReturn(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:125:7: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(
+        ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:126:17: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          status: TvDetailStatus.loaded,
+                  ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:144:7: Error: Method not found: 'when'.
+        when(() => mockTvDetailBloc.state).thenReturn(
+        ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:145:9: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          TvDetailState.initial().copyWith(
+          ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:146:19: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+            status: TvDetailStatus.loaded,
+                    ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:163:7: Error: Method not found: 'when'.
+        when(() => mockTvDetailBloc.state).thenReturn(
+        ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:164:9: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          TvDetailState.initial().copyWith(
+          ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:165:19: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+            status: TvDetailStatus.loaded,
+                    ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:182:5: Error: Method not found: 'when'.
+      when(() => mockTvDetailBloc.state).thenReturn(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:183:7: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(
+        ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:184:17: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          status: TvDetailStatus.loaded,
+                  ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:196:39: Error: 'ToggleWatchlistEvent' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_event.dart'.
+      verify(() => mockTvDetailBloc.add(ToggleWatchlistEvent())).called(1);
+                                        ^^^^^^^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:196:5: Error: Method not found: 'verify'.
+      verify(() => mockTvDetailBloc.add(ToggleWatchlistEvent())).called(1);
+      ^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:202:7: Error: Method not found: 'when'.
+        when(() => mockTvDetailBloc.state).thenReturn(
+        ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:203:9: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          TvDetailState.initial().copyWith(
+          ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:204:19: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+            status: TvDetailStatus.loaded,
+                    ^^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:225:5: Error: Method not found: 'when'.
+      when(() => mockTvDetailBloc.state).thenReturn(
+      ^^^^
+  test/presentation/pages/tv_detail_page_test.dart:226:7: Error: 'TvDetailState' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+        TvDetailState.initial().copyWith(
+        ^^^^^^^^^^^^^
+  test/presentation/pages/tv_detail_page_test.dart:227:17: Error: 'TvDetailStatus' is imported from both 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart' and 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_state.dart'.
+          status: TvDetailStatus.loaded,
+                  ^^^^^^^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:7:9: Error: 'TvDetail' isn't a type.
+    final TvDetail? detail;
+          ^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:8:14: Error: 'Tv' isn't a type.
+    final List<Tv> recommendations;
+               ^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:30:5: Error: 'TvDetail' isn't a type.
+      TvDetail? detail,
+      ^^^^^^^^
+  lib/features/tv/presentation/bloc/tv_detail_state.dart:31:10: Error: 'Tv' isn't a type.
+      List<Tv>? recommendations,
+           ^^
+  .
+00:00 +0 -1: Some tests failed.

@@ -1,0 +1,37 @@
+﻿00:00 +0: loading C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: Page should display skeleton when loading
+00:00 +1: Page should display error message when error
+00:00 +2: Page should display detail content when loaded
+ÔòÉÔòÉÔòí EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK Ôò×ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 2 widgets with text "Overview": [
+            Text("Overview", inherit: true, family: Poppins_500, familyFallback: [Poppins], size:
+19.0, weight: 500, letterSpacing: 0.1, dependencies: [DefaultSelectionStyle, DefaultTextStyle,
+MediaQuery]),
+            Text("Overview", dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart:134:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_tv/test/presentation/pages/tv_detail_page_test.dart line 134
+The test description was:
+  Page should display detail content when loaded
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+00:00 +2 -1: Page should display detail content when loaded [E]
+  Test failed. See exception logs above.
+  The test description was: Page should display detail content when loaded
+  
+00:00 +2 -1: (tearDownAll)
+00:00 +2 -1: Some tests failed.

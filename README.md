@@ -1,5 +1,14 @@
 # a199-flutter-expert-project
 
+This app is modularized into separate local packages for each feature.
+
+Packages
+- ditonton_core: shared db, errors, utils and shared domain entities
+- ditonton_movies: movies feature (data, domain, presentation)
+- ditonton_tv: tv feature (data, domain, presentation)
+
+The root app depends on these via path dependencies in pubspec.yaml.
+
 Repository ini merupakan starter project submission kelas Flutter Expert Dicoding Indonesia.
 
 ---
