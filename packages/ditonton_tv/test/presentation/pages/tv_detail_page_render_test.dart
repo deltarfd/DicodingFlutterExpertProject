@@ -9,18 +9,15 @@ import 'package:ditonton_tv/features/tv/domain/entities/tv_detail.dart';
 import 'package:ditonton_tv/features/tv/domain/usecases/get_season_detail.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/tv_detail_page.dart';
-import 'package:ditonton_tv/features/tv/presentation/providers/tv_detail_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 import '../../helpers/test_http_overrides.dart';
 
 class MockTvDetailBloc extends MockBloc<TvDetailEvent, TvDetailState>
     implements TvDetailBloc {}
-
-class MockTvDetailNotifier extends Mock implements TvDetailNotifier {}
 
 class MockGetSeasonDetail extends Mock implements GetSeasonDetail {}
 
@@ -38,8 +35,8 @@ class TestBlocObserver extends BlocObserver {
 
 void main() {
   late MockTvDetailBloc mockBloc;
-  late MockTvDetailNotifier mockNotifier;
   late MockGetSeasonDetail mockGetSeasonDetail;
+  final getIt = GetIt.instance;
 
   setUpAll(() {
     Bloc.observer = TestBlocObserver();
@@ -50,18 +47,18 @@ void main() {
 
   setUp(() {
     mockBloc = MockTvDetailBloc();
-    mockNotifier = MockTvDetailNotifier();
     mockGetSeasonDetail = MockGetSeasonDetail();
 
-    when(() => mockNotifier.getSeasonDetail).thenReturn(mockGetSeasonDetail);
+    // Register GetSeasonDetail in GetIt for SeasonDetailCubit
+    if (getIt.isRegistered<GetSeasonDetail>()) {
+      getIt.unregister<GetSeasonDetail>();
+    }
+    getIt.registerFactory<GetSeasonDetail>(() => mockGetSeasonDetail);
   });
 
   Widget makeTestableWidget(Widget body) {
-    return MultiProvider(
-      providers: [
-        BlocProvider<TvDetailBloc>.value(value: mockBloc),
-        ChangeNotifierProvider<TvDetailNotifier>.value(value: mockNotifier),
-      ],
+    return BlocProvider<TvDetailBloc>.value(
+      value: mockBloc,
       child: MaterialApp(
         home: body,
         routes: {TvDetailPage.ROUTE_NAME: (context) => body},
@@ -150,11 +147,11 @@ void main() {
 
   group('TvDetailPage - Render Test', () {
     testWidgets('renders and dispatches event on init', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(TvDetailState.initial());
       when(
-            () => mockBloc.stream,
+        () => mockBloc.stream,
       ).thenAnswer((_) => Stream.value(TvDetailState.initial()));
 
       await tester.pumpWidget(makeTestableWidget(const TvDetailPage(id: tId)));
@@ -168,7 +165,7 @@ void main() {
         TvDetailState.initial().copyWith(status: TvDetailStatus.loading),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(status: TvDetailStatus.loading),
         ),
       );
@@ -188,7 +185,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.error,
             message: errorMessage,
@@ -203,8 +200,8 @@ void main() {
     });
 
     testWidgets('renders loaded state with all content', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -214,7 +211,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetail,
@@ -234,8 +231,8 @@ void main() {
     });
 
     testWidgets('renders check icon when in watchlist', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -245,7 +242,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetail,
@@ -262,8 +259,8 @@ void main() {
     });
 
     testWidgets('taps watchlist button and dispatches event', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -273,7 +270,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.fromIterable([
+        (_) => Stream.fromIterable([
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetail,
@@ -309,7 +306,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetailWithSeasons,
@@ -320,7 +317,7 @@ void main() {
       );
 
       when(
-            () => mockGetSeasonDetail.execute(any(), any()),
+        () => mockGetSeasonDetail.execute(any(), any()),
       ).thenAnswer((_) async => Right(tSeasonDetail));
 
       await tester.pumpWidget(makeTestableWidget(const TvDetailPage(id: tId)));
@@ -332,8 +329,8 @@ void main() {
     });
 
     testWidgets('renders empty state when detail is null', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -343,7 +340,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: null,
@@ -379,7 +376,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tvNoGenres,
@@ -406,7 +403,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetail,
@@ -427,8 +424,8 @@ void main() {
     });
 
     testWidgets('expands season tile and loads episodes', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -438,7 +435,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetailWithSeasons,
@@ -449,7 +446,7 @@ void main() {
       );
 
       when(
-            () => mockGetSeasonDetail.execute(any(), any()),
+        () => mockGetSeasonDetail.execute(any(), any()),
       ).thenAnswer((_) async => Right(tSeasonDetail));
 
       await tester.pumpWidget(makeTestableWidget(const TvDetailPage(id: tId)));
@@ -472,8 +469,8 @@ void main() {
     });
 
     testWidgets('renders episodes with null stillPath', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       final seasonWithNullStillPath = SeasonDetail(
         id: 101,
         seasonNumber: 1,
@@ -497,7 +494,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetailWithSeasons,
@@ -508,7 +505,7 @@ void main() {
       );
 
       when(
-            () => mockGetSeasonDetail.execute(any(), any()),
+        () => mockGetSeasonDetail.execute(any(), any()),
       ).thenAnswer((_) async => Right(seasonWithNullStillPath));
 
       await tester.pumpWidget(makeTestableWidget(const TvDetailPage(id: tId)));
@@ -529,8 +526,8 @@ void main() {
     });
 
     testWidgets('renders season with null posterPath', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       const tvWithNullSeasonPoster = TvDetail(
         genres: [Genre(id: 1, name: 'Action')],
         id: 1,
@@ -558,7 +555,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tvWithNullSeasonPoster,
@@ -577,8 +574,8 @@ void main() {
     });
 
     testWidgets('renders seasons list with separator', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -588,7 +585,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetailWithMultipleSeasons,
@@ -605,8 +602,8 @@ void main() {
     });
 
     testWidgets('taps recommendation and navigates', (
-        WidgetTester tester,
-        ) async {
+      WidgetTester tester,
+    ) async {
       when(() => mockBloc.state).thenReturn(
         TvDetailState.initial().copyWith(
           status: TvDetailStatus.loaded,
@@ -616,7 +613,7 @@ void main() {
         ),
       );
       when(() => mockBloc.stream).thenAnswer(
-            (_) => Stream.value(
+        (_) => Stream.value(
           TvDetailState.initial().copyWith(
             status: TvDetailStatus.loaded,
             detail: tTvDetail,

@@ -1,11 +1,14 @@
 # a199-flutter-expert-project
+[![CI](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml/badge.svg)](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml)
+
+## 📦 Project Structure
 
 This app is modularized into separate local packages for each feature.
 
-Packages
-- ditonton_core: shared db, errors, utils and shared domain entities
-- ditonton_movies: movies feature (data, domain, presentation)
-- ditonton_tv: tv feature (data, domain, presentation)
+**Packages**:
+- `ditonton_core`: Shared db, errors, utils and domain entities
+- `ditonton_movies`: Movies feature (data, domain, presentation with BLoC)
+- `ditonton_tv`: TV feature (data, domain, presentation with BLoC)
 
 The root app depends on these via path dependencies in pubspec.yaml.
 

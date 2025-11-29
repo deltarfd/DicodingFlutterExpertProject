@@ -1,11 +1,14 @@
 import 'package:ditonton/app/app.dart';
 import 'package:ditonton/injection.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-// Export MyApp for testing
-export 'package:ditonton/app/app.dart' show MyApp;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  // Initialize Firebase
+  await Firebase.initializeApp();
+
   di.init();
   runApp(const MyApp());
 }

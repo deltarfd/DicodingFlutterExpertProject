@@ -9,22 +9,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.5
+  provider: ^6.1.5+1
   dartz: ^0.10.1
-  http: ^1.2.0
-  equatable: ^2.0.5
+  http: ^1.6.0
+  equatable: ^2.0.7
   flutter_rating_bar: ^4.0.1
   flutter_bloc: ^9.1.1
   bloc: ^9.1.0
-  shared_preferences: ^2.2.3
+  shared_preferences: ^2.5.3
   ditonton_core:
     path: ../ditonton_core
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.8
+  mockito: ^5.6.1
   bloc_test: ^10.0.0
+  build_runner: ^2.10.4
 
 flutter:
   uses-material-design: false

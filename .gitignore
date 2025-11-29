@@ -44,6 +44,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase Configuration Files (SENSITIVE - DO NOT COMMIT)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Coverage files
+coverage/
+**/coverage/
+*.lcov
+
+# Build artifacts
 packages/ditonton_core/build/native_assets/windows/native_assets.json
 packages/ditonton_core/build/test_cache/build/892b637c16d52470fb7b14b9d9897587.cache.dill.track.dill
 packages/ditonton_core/build/unit_test_assets/AssetManifest.bin
@@ -68,3 +79,11 @@ packages/ditonton_tv/build/unit_test_assets/FontManifest.json
 packages/ditonton_tv/build/unit_test_assets/NativeAssetsManifest.json
 packages/ditonton_tv/build/unit_test_assets/NOTICES.Z
 packages/ditonton_tv/build/unit_test_assets/shaders/ink_sparkle.frag
+packages/ditonton_core/build/native_assets/windows/sqlite3.x64.windows.dll
+packages/ditonton_core/build/test_cache/build/ca33f282d90356a564f3e3da52c97351.cache.dill.track.dill
+packages/ditonton_core/build/unit_test_assets/shaders/stretch_effect.frag
+.gitignore
+packages/ditonton_movies/build/test_cache/build/ca33f282d90356a564f3e3da52c97351.cache.dill.track.dill
+packages/ditonton_movies/build/unit_test_assets/shaders/stretch_effect.frag
+packages/ditonton_tv/build/test_cache/build/ca33f282d90356a564f3e3da52c97351.cache.dill.track.dill
+packages/ditonton_tv/build/unit_test_assets/shaders/stretch_effect.frag

@@ -1,13 +1,21 @@
 import 'package:ditonton_core/core/core.dart';
 import 'package:ditonton_movies/features/movies/domain/entities/movie.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_movies_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_movies_event.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_movies_state.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_event.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_state.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_event.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_state.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/movie_detail_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/popular_movies_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/search_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/top_rated_movies_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/watchlist_movies_page.dart';
-import 'package:ditonton_movies/features/movies/presentation/providers/movie_list_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // ignore_for_file: use_build_context_synchronously
 
 class HomeMoviePage extends StatefulWidget {
@@ -22,11 +30,11 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-        () => Provider.of<MovieListNotifier>(context, listen: false)
-          ..fetchNowPlayingMovies()
-          ..fetchPopularMovies()
-          ..fetchTopRatedMovies());
+    Future.microtask(() {
+      context.read<NowPlayingMoviesBloc>().add(FetchNowPlayingMovies());
+      context.read<PopularMoviesBloc>().add(FetchPopularMovies());
+      context.read<TopRatedMoviesBloc>().add(FetchTopRatedMovies());
+    });
   }
 
   @override
@@ -56,48 +64,48 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Now Playing', style: kHeading6),
-              Consumer<MovieListNotifier>(builder: (context, data, child) {
-                final state = data.nowPlayingState;
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: state == RequestState.Loading
-                      ? const HorizontalPosterSkeletonList(itemCount: 8)
-                      : state == RequestState.Loaded
-                          ? _MovieList(data.nowPlayingMovies)
-                          : const Text('Failed'),
-                );
+              BlocBuilder<NowPlayingMoviesBloc, NowPlayingMoviesState>(
+                  builder: (context, state) {
+                final state = context.watch<NowPlayingMoviesBloc>().state;
+                if (state is NowPlayingMoviesLoading) {
+                  return const HorizontalPosterSkeletonList(itemCount: 8);
+                } else if (state is NowPlayingMoviesLoaded) {
+                  return _MovieList(state.movies);
+                } else {
+                  return const Text('Failed');
+                }
               }),
               _buildSubHeading(
                 title: 'Popular',
                 onTap: () =>
                     Navigator.pushNamed(context, PopularMoviesPage.ROUTE_NAME),
               ),
-              Consumer<MovieListNotifier>(builder: (context, data, child) {
-                final state = data.popularMoviesState;
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: state == RequestState.Loading
-                      ? const HorizontalPosterSkeletonList(itemCount: 8)
-                      : state == RequestState.Loaded
-                          ? _MovieList(data.popularMovies)
-                          : const Text('Failed'),
-                );
+              BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
+                  builder: (context, state) {
+                final state = context.watch<PopularMoviesBloc>().state;
+                if (state is PopularMoviesLoading) {
+                  return const HorizontalPosterSkeletonList(itemCount: 8);
+                } else if (state is PopularMoviesLoaded) {
+                  return _MovieList(state.movies);
+                } else {
+                  return const Text('Failed');
+                }
               }),
               _buildSubHeading(
                 title: 'Top Rated',
                 onTap: () =>
                     Navigator.pushNamed(context, TopRatedMoviesPage.ROUTE_NAME),
               ),
-              Consumer<MovieListNotifier>(builder: (context, data, child) {
-                final state = data.topRatedMoviesState;
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: state == RequestState.Loading
-                      ? const HorizontalPosterSkeletonList(itemCount: 8)
-                      : state == RequestState.Loaded
-                          ? _MovieList(data.topRatedMovies)
-                          : const Text('Failed'),
-                );
+              BlocBuilder<TopRatedMoviesBloc, TopRatedMoviesState>(
+                  builder: (context, state) {
+                final state = context.watch<TopRatedMoviesBloc>().state;
+                if (state is TopRatedMoviesLoading) {
+                  return const HorizontalPosterSkeletonList(itemCount: 8);
+                } else if (state is TopRatedMoviesLoaded) {
+                  return _MovieList(state.movies);
+                } else {
+                  return const Text('Failed');
+                }
               }),
             ],
           ),

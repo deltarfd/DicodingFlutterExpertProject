@@ -1,66 +1,49 @@
-import 'package:dartz/dartz.dart';
-import 'package:ditonton_core/core/errors/failure.dart';
 import 'package:ditonton_core/core/utils/utils.dart';
-import 'package:ditonton_movies/features/movies/domain/entities/movie.dart';
-import 'package:ditonton_movies/features/movies/domain/entities/movie_detail.dart';
-import 'package:ditonton_movies/features/movies/domain/repositories/movie_repository.dart';
-import 'package:ditonton_movies/features/movies/domain/usecases/get_watchlist_movies.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/watchlist_movie_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/watchlist_movie_state.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/watchlist_movies_page.dart';
-import 'package:ditonton_movies/features/movies/presentation/providers/watchlist_movie_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../dummy_data/dummy_objects.dart';
+import 'watchlist_movies_page_test.mocks.dart';
 
-class _Repo implements MovieRepository {
-  final Either<Failure, List<Movie>> watchlistResult;
-  _Repo(this.watchlistResult);
-  @override
-  Future<Either<Failure, List<Movie>>> getWatchlistMovies() async => watchlistResult;
-  // Unused paths for this widget
-  @override
-  Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, List<Movie>>> getPopularMovies() async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, List<Movie>>> getTopRatedMovies() async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, MovieDetail>> getMovieDetail(int id) async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, List<Movie>>> getMovieRecommendations(int id) async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, List<Movie>>> searchMovies(String query) async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async => throw UnimplementedError();
-  @override
-  Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async => throw UnimplementedError();
-  @override
-  Future<bool> isAddedToWatchlist(int id) async => throw UnimplementedError();
-}
+@GenerateMocks([WatchlistMovieBloc])
+void main() {
+  late MockWatchlistMovieBloc mockBloc;
 
-Widget _app(MovieRepository repo) => MaterialApp(
-      navigatorObservers: [routeObserver],
-      home: ChangeNotifierProvider(
-        create: (_) => WatchlistMovieNotifier(
-          getWatchlistMovies: GetWatchlistMovies(repo),
-        ),
-        child: const WatchlistMoviesPage(),
+  setUp(() {
+    mockBloc = MockWatchlistMovieBloc();
+  });
+
+  Widget makeTestableWidget(Widget body) {
+    return BlocProvider<WatchlistMovieBloc>.value(
+      value: mockBloc,
+      child: MaterialApp(
+        navigatorObservers: [routeObserver],
+        home: body,
       ),
     );
+  }
 
-void main() {
   testWidgets('Watchlist shows list when loaded', (tester) async {
-    final repo = _Repo(Right([testWatchlistMovie]));
-    await tester.pumpWidget(_app(repo));
-    await tester.pump(const Duration(milliseconds: 200));
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(WatchlistMovieLoaded([testWatchlistMovie]));
+
+    await tester.pumpWidget(makeTestableWidget(const WatchlistMoviesPage()));
+
     expect(find.byType(ListView), findsOneWidget);
   });
 
   testWidgets('Watchlist shows error message', (tester) async {
-    final repo = _Repo(const Left(ServerFailure('oops')));
-    await tester.pumpWidget(_app(repo));
-    await tester.pump(const Duration(milliseconds: 200));
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(const WatchlistMovieError('oops'));
+
+    await tester.pumpWidget(makeTestableWidget(const WatchlistMoviesPage()));
+
     expect(find.byKey(const Key('error_message')), findsOneWidget);
   });
 }

@@ -1,32 +1,30 @@
-import 'package:ditonton_core/core/utils/state_enum.dart';
 import 'package:ditonton_core/core/utils/utils.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv.dart';
+import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_bloc.dart';
+import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_state.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/watchlist_tv_page.dart';
-import 'package:ditonton_tv/features/tv/presentation/providers/watchlist_tv_notifier.dart';
 import 'package:ditonton_tv/features/tv/presentation/widgets/tv_card_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:bloc_test/bloc_test.dart';
 
 import 'watchlist_tv_page_test.mocks.dart';
 
-@GenerateMocks([WatchlistTvNotifier])
+@GenerateMocks([WatchlistTvBloc])
 void main() {
-  late MockWatchlistTvNotifier mockNotifier;
+  late MockWatchlistTvBloc mockBloc;
 
   setUp(() {
-    mockNotifier = MockWatchlistTvNotifier();
+    mockBloc = MockWatchlistTvBloc();
   });
 
   Widget _makeTestableWidget(Widget body) {
     return MaterialApp(
       navigatorObservers: [routeObserver],
-      home: ChangeNotifierProvider<WatchlistTvNotifier>.value(
-        value: mockNotifier,
-        child: body,
-      ),
+      home: BlocProvider<WatchlistTvBloc>.value(value: mockBloc, child: body),
     );
   }
 
@@ -38,8 +36,8 @@ void main() {
   testWidgets('should show loading indicator when state is loading', (
     tester,
   ) async {
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Loading);
-    when(mockNotifier.watchlistTv).thenReturn([]);
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(WatchlistTvLoading());
 
     await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
 
@@ -64,8 +62,8 @@ void main() {
       ),
     ];
 
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.watchlistTv).thenReturn(tvList);
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(WatchlistTvLoaded(tvList));
 
     await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
 
@@ -76,9 +74,8 @@ void main() {
   testWidgets('should show error message when state is error', (tester) async {
     const errorMessage = 'Failed to load watchlist';
 
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Error);
-    when(mockNotifier.watchlistTv).thenReturn([]);
-    when(mockNotifier.message).thenReturn(errorMessage);
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(const WatchlistTvError(errorMessage));
 
     await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
 
@@ -87,8 +84,8 @@ void main() {
   });
 
   testWidgets('should show AppBar with correct title', (tester) async {
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Loading);
-    when(mockNotifier.watchlistTv).thenReturn([]);
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(WatchlistTvLoading());
 
     await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
 
@@ -96,20 +93,9 @@ void main() {
     expect(find.text('Watchlist TV'), findsOneWidget);
   });
 
-  testWidgets('should call fetchWatchlistTv on init', (tester) async {
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Loading);
-    when(mockNotifier.watchlistTv).thenReturn([]);
-    when(mockNotifier.fetchWatchlistTv()).thenAnswer((_) async => {});
-
-    await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
-    await tester.pump(Duration.zero);
-
-    verify(mockNotifier.fetchWatchlistTv()).called(1);
-  });
-
   testWidgets('should show empty list when watchlist is empty', (tester) async {
-    when(mockNotifier.watchlistState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.watchlistTv).thenReturn([]);
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(const WatchlistTvLoaded([]));
 
     await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
 

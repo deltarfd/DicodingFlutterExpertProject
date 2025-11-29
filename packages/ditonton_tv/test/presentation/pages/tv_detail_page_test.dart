@@ -10,13 +10,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:ditonton_tv/features/tv/presentation/providers/tv_detail_notifier.dart';
-import 'package:provider/provider.dart';
-
 class MockTvDetailBloc extends MockBloc<TvDetailEvent, TvDetailState>
     implements TvDetailBloc {}
-
-class MockTvDetailNotifier extends Mock implements TvDetailNotifier {}
 
 class FakeTvDetailEvent extends Fake implements TvDetailEvent {}
 
@@ -24,7 +19,6 @@ class FakeTvDetailState extends Fake implements TvDetailState {}
 
 void main() {
   late MockTvDetailBloc mockBloc;
-  late MockTvDetailNotifier mockNotifier;
 
   setUpAll(() {
     registerFallbackValue(FakeTvDetailEvent());
@@ -33,15 +27,11 @@ void main() {
 
   setUp(() {
     mockBloc = MockTvDetailBloc();
-    mockNotifier = MockTvDetailNotifier();
   });
 
   Widget makeTestableWidget(Widget body) {
-    return MultiProvider(
-      providers: [
-        BlocProvider<TvDetailBloc>.value(value: mockBloc),
-        ChangeNotifierProvider<TvDetailNotifier>.value(value: mockNotifier),
-      ],
+    return BlocProvider<TvDetailBloc>.value(
+      value: mockBloc,
       child: MaterialApp(home: body),
     );
   }

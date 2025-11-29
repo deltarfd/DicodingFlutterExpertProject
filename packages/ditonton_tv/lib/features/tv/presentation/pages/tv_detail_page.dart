@@ -3,12 +3,13 @@ import 'package:ditonton_core/core/core.dart';
 import 'package:ditonton_core/domain/entities/genre.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv_detail.dart';
+import 'package:ditonton_tv/features/tv/domain/usecases/get_season_detail.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/season_detail_cubit.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
-import 'package:ditonton_tv/features/tv/presentation/providers/tv_detail_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get_it/get_it.dart';
 
 class TvDetailPage extends StatefulWidget {
   // ignore: constant_identifier_names
@@ -151,9 +152,8 @@ class _DetailContent extends StatelessWidget {
                                   final s = tv.seasons[index];
                                   return BlocProvider(
                                     create: (ctx) => SeasonDetailCubit(
-                                      getSeasonDetail: ctx
-                                          .read<TvDetailNotifier>()
-                                          .getSeasonDetail,
+                                      getSeasonDetail:
+                                          GetIt.I<GetSeasonDetail>(),
                                       tvId: tv.id,
                                     ),
                                     child: BlocBuilder<SeasonDetailCubit,
