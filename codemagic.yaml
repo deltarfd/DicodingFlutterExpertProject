@@ -15,61 +15,87 @@ workflows:
           source: true
     environment:
       groups:
-        - FIREBASE  # Your Firebase environment variable group
+        - FIREBASE
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        # Skip tests in build since GitHub Actions already runs them
+        SKIP_TESTS: true
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
     
     scripts:
-      - name: Set up Firebase configuration files
+      - name: Set up Firebase configuration
         script: |
-          # Decode and create google-services.json from base64 (Android)
+          echo "📱 Setting up Firebase..."
           echo "$ANDROID_FIREBASE_SECRET" | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
-          
-          # Decode and create GoogleService-Info.plist from base64 (iOS)
           echo "$IOS_FIREBASE_SECRET" | base64 --decode > $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
           
-          # Verify files were created
-          if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
-            echo "✓ google-services.json created successfully"
-          fi
-          if [ -f "$CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist" ]; then
-            echo "✓ GoogleService-Info.plist created successfully"
-          fi
+          # Verify
+          [ -f "$CM_BUILD_DIR/android/app/google-services.json" ] && echo "✓ Android config ready"
+          [ -f "$CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist" ] && echo "✓ iOS config ready"
       
       - name: Get Flutter packages
         script: |
+          echo "📦 Getting dependencies..."
           flutter pub get
-          cd packages/ditonton_core && flutter pub get && cd ../..
-          cd packages/ditonton_movies && flutter pub get && cd ../..
-          cd packages/ditonton_tv && flutter pub get && cd ../..
+          
+          # Get package dependencies in parallel
+          (cd packages/ditonton_core && flutter pub get) &
+          (cd packages/ditonton_movies && flutter pub get) &
+          (cd packages/ditonton_tv && flutter pub get) &
+          wait
+          
+          echo "✓ All dependencies downloaded"
       
       - name: Run tests
         script: |
-          flutter test --coverage
-          cd packages/ditonton_core && flutter test --coverage && cd ../..
-          cd packages/ditonton_movies && flutter test --coverage && cd ../..
-          cd packages/ditonton_tv && flutter test --coverage && cd ../..
+          # Skip tests if already run by GitHub Actions
+          if [ "${SKIP_TESTS:-false}" = "true" ]; then
+            echo "⏭️  Skipping tests (already run by GitHub Actions)"
+            exit 0
+          fi
+          
+          echo "🧪 Running tests..."
+          cd $CM_BUILD_DIR
+          flutter test
+          
+          cd $CM_BUILD_DIR/packages/ditonton_core && flutter test
+          cd $CM_BUILD_DIR/packages/ditonton_movies && flutter test
+          cd $CM_BUILD_DIR/packages/ditonton_tv && flutter test
+          
+          echo "✓ All tests passed"
       
       - name: Build Android APK
         script: |
-          flutter build apk --release
+          echo "🔨 Building release APK..."
+          flutter build apk --release \
+            --target-platform android-arm,android-arm64 \
+            --split-per-abi
+          echo "✓ APK built successfully"
       
       - name: Build Android App Bundle
         script: |
+          echo "📦 Building App Bundle..."
           flutter build appbundle --release
+          echo "✓ AAB built successfully"
       
-      # iOS build requires Apple Developer account ($99/year)
-      # Uncomment when you have Apple Developer account and code signing setup
-      # - name: Build iOS (requires Apple Developer account)
+      # iOS build - uncomment when you have Apple Developer account
+      # - name: Build iOS
       #   script: |
-      #     flutter build ipa --release --export-options-plist=$CM_BUILD_DIR/ios/ExportOptions.plist
+      #     echo "🍎 Building iOS..."
+      #     flutter build ipa --release \
+      #       --export-options-plist=$CM_BUILD_DIR/ios/ExportOptions.plist
+      #     echo "✓ iOS built successfully"
     
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
-      - build/app/outputs/bundle/**/*.aab
-      # - build/ios/ipa/*.ipa  # Requires Apple Developer account
-      - coverage/lcov.info
+      - build/app/outputs/bundle/release/app-release.aab
+      # - build/ios/ipa/*.ipa
     
     publishing:
       email:
@@ -78,14 +104,3 @@ workflows:
         notify:
           success: true
           failure: true
-      
-      # Uncomment to publish to Google Play
-      # google_play:
-      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-      #   track: internal
-      
-      # Uncomment to publish to App Store
-      # app_store_connect:
-      #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-      #   key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-      #   issuer_id: $APP_STORE_CONNECT_ISSUER_ID
