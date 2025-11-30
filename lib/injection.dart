@@ -18,6 +18,7 @@ import 'package:ditonton_movies/features/movies/domain/usecases/remove_watchlist
 import 'package:ditonton_movies/features/movies/domain/usecases/save_watchlist.dart';
 import 'package:ditonton_movies/features/movies/domain/usecases/search_movies.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_detail_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/bloc/movie_search_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_bloc.dart';
@@ -67,6 +68,7 @@ void init() {
     ),
   );
   locator.registerFactory(() => WatchlistMovieBloc(locator()));
+  locator.registerFactory(() => MovieSearchBloc(searchMovies: locator()));
 
   // TV BLoCs
   locator.registerFactory(() => OnTheAirTvBloc(getOnTheAirTv: locator()));

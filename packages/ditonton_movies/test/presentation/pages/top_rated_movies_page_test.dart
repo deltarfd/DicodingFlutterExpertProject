@@ -29,24 +29,27 @@ void main() {
 
   testWidgets('Page should display progress bar when loading',
       (WidgetTester tester) async {
-    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.stream)
+        .thenAnswer((_) => Stream.value(TopRatedMoviesLoading()));
     when(mockBloc.state).thenReturn(TopRatedMoviesLoading());
 
-    final listViewFinder = find.byType(ListView);
+    final progressFinder = find.byType(CircularProgressIndicator);
 
     await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
 
-    expect(listViewFinder, findsOneWidget);
+    expect(progressFinder, findsOneWidget);
   });
 
   testWidgets('Page should display when data is loaded',
       (WidgetTester tester) async {
-    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.stream)
+        .thenAnswer((_) => Stream.value(const TopRatedMoviesLoaded(<Movie>[])));
     when(mockBloc.state).thenReturn(const TopRatedMoviesLoaded(<Movie>[]));
 
     final listViewFinder = find.byType(ListView);
 
     await tester.pumpWidget(makeTestableWidget(const TopRatedMoviesPage()));
+    await tester.pump(); // Let the BLoC emit
 
     expect(listViewFinder, findsOneWidget);
   });

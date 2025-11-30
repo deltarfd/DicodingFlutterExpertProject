@@ -9,23 +9,95 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - uses: subosito/flutter-action@v2
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.16.0'
+        flutter-version: '3.38.3'
         channel: 'stable'
-        
-    - name: Install Dependencies
+        cache: true
+    
+    - name: Verify Flutter installation
+      run: |
+        flutter --version
+        flutter doctor -v
+    
+    - name: Get dependencies
       run: flutter pub get
-      
-    - name: Analyze
+    
+    - name: Get dependencies for all packages
+      run: |
+        cd packages/ditonton_core && flutter pub get && cd ../..
+        cd packages/ditonton_movies && flutter pub get && cd ../..
+        cd packages/ditonton_tv && flutter pub get && cd ../..
+    
+    - name: Analyze code
       run: flutter analyze
-      
-    - name: Run Tests
+    
+    - name: Run unit tests
       run: flutter test --coverage
-      
+    
+    - name: Run package tests with coverage
+      run: |
+        cd packages/ditonton_core && flutter test --coverage && cd ../..
+        cd packages/ditonton_movies && flutter test --coverage && cd ../..
+        cd packages/ditonton_tv && flutter test --coverage && cd ../..
+    
+    - name: Install lcov
+      run: |
+        sudo apt-get update -qq -y
+        sudo apt-get install lcov -y
+    
+    - name: Generate coverage report
+      run: |
+        # Merge coverage data from all packages
+        lcov --add-tracefile coverage/lcov.info \
+             --add-tracefile packages/ditonton_core/coverage/lcov.info \
+             --add-tracefile packages/ditonton_movies/coverage/lcov.info \
+             --add-tracefile packages/ditonton_tv/coverage/lcov.info \
+             --output-file coverage/lcov.info || true
+        
+        # Generate HTML report
+        genhtml coverage/lcov.info -o coverage/html
+        
+        # Display coverage summary
+        lcov --list coverage/lcov.info
+    
+    - name: Deploy coverage to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./coverage/html
+        publish_branch: gh-pages
+        force_orphan: true
+    
+    - name: Run integration tests
+      run: |
+        flutter test integration_test/app_smoke_test.dart
+        flutter test integration_test/tv_main_flow_test.dart
+    
     - name: Build APK
       run: flutter build apk --debug
+    
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
+        retention-days: 7
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          coverage/lcov.info
+          packages/*/coverage/lcov.info
+        retention-days: 30
+
