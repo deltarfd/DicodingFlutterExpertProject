@@ -13,11 +13,11 @@ workflows:
     scripts:
       - name: Set up Firebase configuration files
         script: |
-          # Decode and create google-services.json from base64
-          echo "$GOOGLE_SERVICES_JSON" | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
+          # Decode and create google-services.json from base64 (Android)
+          echo "$ANDROID_FIREBASE_SECRET" | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
           
-          # Decode and create GoogleService-Info.plist from base64
-          echo "$GOOGLE_SERVICE_INFO_PLIST" | base64 --decode > $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+          # Decode and create GoogleService-Info.plist from base64 (iOS)
+          echo "$IOS_FIREBASE_SECRET" | base64 --decode > $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
           
           # Verify files were created
           if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
