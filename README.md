@@ -1,5 +1,7 @@
 # Ditonton - Flutter Expert Project
+
 [![CI](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml/badge.svg)](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml)
+[![Codemagic build status](https://api.codemagic.io/apps/692a93c3ad97215c39c7a9ef/flutter-workflow/status_badge.svg)](https://codemagic.io/app/692a93c3ad97215c39c7a9ef/flutter-workflow/latest_build)
 
 > **Flutter Version Required**: 3.38.3 or higher
 

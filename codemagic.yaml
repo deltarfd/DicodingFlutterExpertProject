@@ -2,7 +2,17 @@ workflows:
   flutter-workflow:
     name: Flutter Ditonton
     max_build_duration: 60
-    instance_type: mac_mini_m1
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'master'
+          include: true
+          source: true
     environment:
       groups:
         - FIREBASE  # Your Firebase environment variable group
