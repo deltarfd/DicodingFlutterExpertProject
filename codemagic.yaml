@@ -49,14 +49,16 @@ workflows:
         script: |
           flutter build appbundle --release
       
-      - name: Build iOS (if on macOS)
-        script: |
-          flutter build ipa --release --export-options-plist=$CM_BUILD_DIR/ios/ExportOptions.plist
+      # iOS build requires Apple Developer account ($99/year)
+      # Uncomment when you have Apple Developer account and code signing setup
+      # - name: Build iOS (requires Apple Developer account)
+      #   script: |
+      #     flutter build ipa --release --export-options-plist=$CM_BUILD_DIR/ios/ExportOptions.plist
     
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
       - build/app/outputs/bundle/**/*.aab
-      - build/ios/ipa/*.ipa
+      # - build/ios/ipa/*.ipa  # Requires Apple Developer account
       - coverage/lcov.info
     
     publishing:
