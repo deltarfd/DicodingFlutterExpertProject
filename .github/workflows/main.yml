@@ -52,18 +52,23 @@ jobs:
     
     - name: Generate coverage report
       run: |
+        # Fix paths in package coverage files to include package directory
+        sed -i 's|SF:lib/|SF:packages/ditonton_core/lib/|g' packages/ditonton_core/coverage/lcov.info
+        sed -i 's|SF:lib/|SF:packages/ditonton_movies/lib/|g' packages/ditonton_movies/coverage/lcov.info
+        sed -i 's|SF:lib/|SF:packages/ditonton_tv/lib/|g' packages/ditonton_tv/coverage/lcov.info
+        
         # Merge coverage data from all packages
         lcov --add-tracefile coverage/lcov.info \
              --add-tracefile packages/ditonton_core/coverage/lcov.info \
              --add-tracefile packages/ditonton_movies/coverage/lcov.info \
              --add-tracefile packages/ditonton_tv/coverage/lcov.info \
-             --output-file coverage/lcov.info || true
+             --output-file coverage/merged.info
         
-        # Generate HTML report (ignore missing source files)
-        genhtml coverage/lcov.info -o coverage/html --ignore-errors source
+        # Generate HTML report from repository root
+        genhtml coverage/merged.info -o coverage/html --ignore-errors source
         
         # Display coverage summary
-        lcov --list coverage/lcov.info
+        lcov --list coverage/merged.info
     
     - name: Deploy coverage to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
