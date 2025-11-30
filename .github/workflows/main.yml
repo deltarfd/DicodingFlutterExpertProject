@@ -59,8 +59,8 @@ jobs:
              --add-tracefile packages/ditonton_tv/coverage/lcov.info \
              --output-file coverage/lcov.info || true
         
-        # Generate HTML report (use --synthesize-missing for package structure)
-        genhtml coverage/lcov.info -o coverage/html --synthesize-missing
+        # Generate HTML report (ignore missing source files)
+        genhtml coverage/lcov.info -o coverage/html --ignore-errors source
         
         # Display coverage summary
         lcov --list coverage/lcov.info
