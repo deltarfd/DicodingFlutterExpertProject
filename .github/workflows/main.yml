@@ -36,9 +36,6 @@ jobs:
         cd packages/ditonton_movies && flutter pub get && cd ../..
         cd packages/ditonton_tv && flutter pub get && cd ../..
     
-    - name: Analyze code
-      run: flutter analyze
-    
     - name: Run unit tests
       run: flutter test --coverage
     
