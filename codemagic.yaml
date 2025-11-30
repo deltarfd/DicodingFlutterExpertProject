@@ -1,0 +1,79 @@
+workflows:
+  flutter-workflow:
+    name: Flutter Ditonton
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - FIREBASE  # Your Firebase environment variable group
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    
+    scripts:
+      - name: Set up Firebase configuration files
+        script: |
+          # Decode and create google-services.json from base64
+          echo "$GOOGLE_SERVICES_JSON" | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
+          
+          # Decode and create GoogleService-Info.plist from base64
+          echo "$GOOGLE_SERVICE_INFO_PLIST" | base64 --decode > $CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+          
+          # Verify files were created
+          if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
+            echo "✓ google-services.json created successfully"
+          fi
+          if [ -f "$CM_BUILD_DIR/ios/Runner/GoogleService-Info.plist" ]; then
+            echo "✓ GoogleService-Info.plist created successfully"
+          fi
+      
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+          cd packages/ditonton_core && flutter pub get && cd ../..
+          cd packages/ditonton_movies && flutter pub get && cd ../..
+          cd packages/ditonton_tv && flutter pub get && cd ../..
+      
+      - name: Run tests
+        script: |
+          flutter test --coverage
+          cd packages/ditonton_core && flutter test --coverage && cd ../..
+          cd packages/ditonton_movies && flutter test --coverage && cd ../..
+          cd packages/ditonton_tv && flutter test --coverage && cd ../..
+      
+      - name: Build Android APK
+        script: |
+          flutter build apk --release
+      
+      - name: Build Android App Bundle
+        script: |
+          flutter build appbundle --release
+      
+      - name: Build iOS (if on macOS)
+        script: |
+          flutter build ipa --release --export-options-plist=$CM_BUILD_DIR/ios/ExportOptions.plist
+    
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/bundle/**/*.aab
+      - build/ios/ipa/*.ipa
+      - coverage/lcov.info
+    
+    publishing:
+      email:
+        recipients:
+          - deltarfd@users.noreply.github.com
+        notify:
+          success: true
+          failure: true
+      
+      # Uncomment to publish to Google Play
+      # google_play:
+      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      #   track: internal
+      
+      # Uncomment to publish to App Store
+      # app_store_connect:
+      #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+      #   key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+      #   issuer_id: $APP_STORE_CONNECT_ISSUER_ID
