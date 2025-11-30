@@ -5,31 +5,39 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
+/// Initialize Firebase services
+/// Returns true if successful, false if Firebase is unavailable
+Future<bool> initializeFirebase() async {
   try {
-    // Initialize Firebase
     await Firebase.initializeApp();
     debugPrint('✅ Firebase initialized successfully');
 
-    // Initialize Crashlytics
+    // Configure Crashlytics error handlers
     FlutterError.onError = (errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
 
-    // Pass all uncaught asynchronous errors to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
 
     debugPrint('✅ Firebase Crashlytics configured');
+    return true;
   } catch (e) {
     debugPrint('⚠️ Firebase initialization failed: $e');
     debugPrint('App will continue without Firebase features');
+    return false;
   }
+}
 
-  di.init();
+Future<void> main() async {
+  await mainCommon();
   runApp(const MyApp());
+}
+
+Future<void> mainCommon() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase();
+  di.init();
 }

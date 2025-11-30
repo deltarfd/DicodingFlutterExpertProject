@@ -10,7 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final FirebaseAnalytics? analytics;
+
+  const MyApp({super.key, this.analytics});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
               navigatorObservers: [
                 routeObserver,
                 FirebaseAnalyticsObserver(
-                  analytics: FirebaseAnalytics.instance,
+                  analytics: analytics ?? FirebaseAnalytics.instance,
                 ),
               ],
               onGenerateRoute: AppRoutes.onGenerateRoute,

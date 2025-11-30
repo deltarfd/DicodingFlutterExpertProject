@@ -13,7 +13,8 @@ import 'package:ditonton_tv/features/tv/presentation/providers/watchlist_tv_noti
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('di resolves key factories/providers without throwing', () {
+  test('di resolves key factories/providers without throwing', () async {
+    await di.locator.reset();
     di.init();
 
     // Movies providers

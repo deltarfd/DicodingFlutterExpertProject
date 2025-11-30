@@ -1,0 +1,38 @@
+﻿00:00 +0: loading C:/Users/delta/Documents/Development/FlutterExpertProject/packages/ditonton_movies/test/presentation/bloc/movie_detail_bloc_test.dart
+00:00 +0: Get Movie Detail Should emit [Loading, Loaded] when data is gotten successfully
+00:00 +1: Get Movie Detail Should emit [Loading, Error] when get detail is unsuccessful
+00:00 +2: Get Movie Detail Should emit error message when get recommendations fails
+00:00 +3: Watchlist Should emit [watchlistStatus] when LoadWatchlistStatus is added
+00:00 +4: Watchlist Should emit [watchlistMessage] when AddWatchlist is added successfully
+00:00 +5: Watchlist Should emit [watchlistMessage] when RemoveWatchlist is added successfully
+00:00 +5 -1: Watchlist Should emit [watchlistMessage] when RemoveWatchlist is added successfully [E]
+  Expected: [
+              MovieDetailState:MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist),
+              MovieDetailState:MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist)
+            ]
+    Actual: [
+              MovieDetailState:MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist)
+            ]
+     Which: at location [1] is [
+              MovieDetailState:MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist)
+            ] which shorter than expected
+  
+  ==== diff ========================================
+  
+  [90m[MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist)[0m[31m[-, MovieDetailState(MovieDetailStatus.initial, null, [], false, , Removed from Watchlist)-][0m[90m][0m
+  
+  ==== end diff ====================================
+  
+  package:bloc_test/src/bloc_test.dart 224:11  testBloc.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                   _Completer.completeError
+  package:bloc_test/src/bloc_test.dart 255:43  _runZonedGuarded.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                   _CustomZone.registerBinaryCallback
+  package:bloc_test/src/bloc_test.dart 252:5   _runZonedGuarded.<fn>
+  dart:async                                   runZonedGuarded
+  package:bloc_test/src/bloc_test.dart 251:3   _runZonedGuarded
+  package:bloc_test/src/bloc_test.dart 198:11  testBloc
+  package:bloc_test/src/bloc_test.dart 156:13  blocTest.<fn>
+  
+00:00 +5 -1: Some tests failed.

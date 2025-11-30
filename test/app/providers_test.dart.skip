@@ -26,7 +26,9 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
+    // Reset DI container to avoid conflicts when running with other tests
+    await di.locator.reset();
     di.init();
   });
 

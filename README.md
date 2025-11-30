@@ -1,5 +1,11 @@
-# a199-flutter-expert-project
+# Ditonton - Flutter Expert Project
 [![CI](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml/badge.svg)](https://github.com/deltarfd/DicodingFlutterExpertProject/actions/workflows/main.yml)
+
+> **Flutter Version Required**: 3.38.3 or higher
+
+📊 **[View Coverage Report](https://deltarfd.github.io/DicodingFlutterExpertProject/)**
+
+## 🎯 Dicoding Submission - Flutter Expert
 
 ## 📦 Project Structure
 
@@ -11,6 +17,26 @@ This app is modularized into separate local packages for each feature.
 - `ditonton_tv`: TV feature (data, domain, presentation with BLoC)
 
 The root app depends on these via path dependencies in pubspec.yaml.
+
+## 🔄 CI/CD Pipeline
+
+Automated testing and building powered by GitHub Actions:
+
+- **Flutter 3.38.3** - Latest stable version
+- **Dependency Caching** - Faster build times
+- **Comprehensive Testing** - Unit, widget, and integration tests across all packages
+- **Coverage Reporting** - Automatic HTML coverage reports with lcov/genhtml
+- **GitHub Pages** - Coverage reports published at [deltarfd.github.io/DicodingFlutterExpertProject](https://deltarfd.github.io/DicodingFlutterExpertProject/)
+- **APK Artifacts** - Debug builds saved for 7 days
+- **Integration Tests** - Full app flow testing on every commit
+
+## 🔥 Firebase Integration
+
+- **Analytics** - User behavior tracking with `FirebaseAnalyticsObserver`
+- **Crashlytics** - Automatic crash reporting for production stability
+- **SSL Pinning** - Enhanced security for TMDB API requests
+
+---
 
 Repository ini merupakan starter project submission kelas Flutter Expert Dicoding Indonesia.
 

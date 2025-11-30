@@ -1,3 +1,4 @@
+import 'package:ditonton/app/app.dart';
 import 'package:ditonton/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,13 +10,13 @@ void main() {
   });
 
   test('MyApp can be instantiated', () {
-    const app = MyApp();
+    final app = MyApp();
     expect(app, isA<MyApp>());
   });
 
   test('MyApp has correct key', () {
     const key = Key('test_key');
-    const app = MyApp(key: key);
+    final app = MyApp(key: key);
     expect(app.key, key);
   });
 }

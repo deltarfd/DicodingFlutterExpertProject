@@ -22,24 +22,18 @@ void main() {
     bloc = WatchlistTvBloc(mockGetWatchlistTv);
   });
 
+  final tTv = Tv(
+    id: 1,
+    name: 'name',
+    overview: 'overview',
+    posterPath: 'posterPath',
+    voteAverage: 1,
+  );
+  final tTvList = <Tv>[tTv];
+
   test('initial state should be empty', () {
     expect(bloc.state, WatchlistTvEmpty());
   });
-
-  final tTv = Tv(
-    backdropPath: 'backdropPath',
-    genreIds: const [1, 2, 3],
-    id: 1,
-    originalName: 'originalName',
-    overview: 'overview',
-    popularity: 1,
-    posterPath: 'posterPath',
-    firstAirDate: 'firstAirDate',
-    name: 'name',
-    voteAverage: 1,
-    voteCount: 1,
-  );
-  final tTvList = <Tv>[tTv];
 
   blocTest<WatchlistTvBloc, WatchlistTvState>(
     'Should emit [Loading, Loaded] when data is gotten successfully',
@@ -61,13 +55,13 @@ void main() {
     build: () {
       when(
         mockGetWatchlistTv.execute(),
-      ).thenAnswer((_) async => const Left(DatabaseFailure("Can't get data")));
+      ).thenAnswer((_) async => const Left(ServerFailure('Server Failure')));
       return bloc;
     },
     act: (bloc) => bloc.add(FetchWatchlistTv()),
     expect: () => [
       WatchlistTvLoading(),
-      const WatchlistTvError("Can't get data"),
+      const WatchlistTvError('Server Failure'),
     ],
     verify: (bloc) {
       verify(mockGetWatchlistTv.execute());

@@ -58,15 +58,12 @@ void init() {
   locator.registerFactory(() => NowPlayingMoviesBloc(locator()));
   locator.registerFactory(() => PopularMoviesBloc(locator()));
   locator.registerFactory(() => TopRatedMoviesBloc(locator()));
-  locator.registerFactory(
-    () => MovieDetailBloc(
+  locator.registerFactory(() => MovieDetailBloc(
       getMovieDetail: locator(),
       getMovieRecommendations: locator(),
       getWatchListStatus: locator(),
       saveWatchlist: locator(),
-      removeWatchlist: locator(),
-    ),
-  );
+      removeWatchlist: locator()));
   locator.registerFactory(() => WatchlistMovieBloc(locator()));
   locator.registerFactory(() => MovieSearchBloc(searchMovies: locator()));
 
@@ -75,15 +72,12 @@ void init() {
   locator.registerFactory(() => AiringTodayTvBloc(getAiringTodayTv: locator()));
   locator.registerFactory(() => PopularTvBloc(getPopularTv: locator()));
   locator.registerFactory(() => TopRatedTvBloc(getTopRatedTv: locator()));
-  locator.registerFactory(
-    () => TvDetailBloc(
+  locator.registerFactory(() => TvDetailBloc(
       getTvDetail: locator(),
       getTvRecommendations: locator(),
       getWatchlistStatusTv: locator(),
       saveWatchlistTv: locator(),
-      removeWatchlistTv: locator(),
-    ),
-  );
+      removeWatchlistTv: locator()));
   locator.registerFactory(() => TvSearchBloc(searchTv: locator()));
   locator.registerFactory(() => WatchlistTvBloc(locator()));
 

@@ -4,7 +4,8 @@ import 'package:ditonton_movies/features/movies/presentation/pages/movie_detail_
 import 'package:ditonton_movies/features/movies/presentation/pages/popular_movies_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/top_rated_movies_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/watchlist_movies_page.dart';
-import 'package:ditonton_movies/features/movies/presentation/pages/search_page.dart' as m;
+import 'package:ditonton_movies/features/movies/presentation/pages/search_page.dart'
+    as m;
 import 'package:ditonton_tv/features/tv/presentation/pages/home_tv_page.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/popular_tv_page.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/top_rated_tv_page.dart';
@@ -33,11 +34,19 @@ void main() {
       const RouteSettings(name: TvDetailPage.ROUTE_NAME, arguments: 1),
       const RouteSettings(name: TvSearchPage.ROUTE_NAME),
       const RouteSettings(name: WatchlistTvPage.ROUTE_NAME),
+      const RouteSettings(name: '/about'),
     ];
 
     for (final s in names) {
       final r = AppRoutes.onGenerateRoute(s);
       expect(r, isA<Route<dynamic>>());
     }
+  });
+
+  test('onGenerateRoute returns fallback for unknown route', () {
+    final route = AppRoutes.onGenerateRoute(
+      const RouteSettings(name: '/unknown-route'),
+    );
+    expect(route, isA<MaterialPageRoute>());
   });
 }

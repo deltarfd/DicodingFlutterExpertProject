@@ -82,6 +82,11 @@ void main() {
     when(() => mockTopRatedTvBloc.state).thenReturn(TopRatedTvLoaded([]));
   });
 
+  tearDown(() {
+    // Ensure proper cleanup between tests to avoid widget tree conflicts
+    TestWidgetsFlutterBinding.ensureInitialized();
+  });
+
   Widget makeTestableWidget() {
     return MultiProvider(
       providers: [

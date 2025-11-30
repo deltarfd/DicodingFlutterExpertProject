@@ -93,12 +93,19 @@ void main() {
       },
       act: (bloc) => bloc.add(const FetchMovieDetail(tId)),
       expect: () => [
-        MovieDetailState.initial().copyWith(state: RequestState.Loading),
+        MovieDetailState.initial()
+            .copyWith(movieDetailStatus: MovieDetailStatus.loading),
         MovieDetailState.initial().copyWith(
-          state: RequestState.Loaded,
+          movieDetailStatus: MovieDetailStatus.loaded,
+          movieDetail: tMovieDetail,
+          movieRecommendations: [],
+          message: '',
+        ),
+        MovieDetailState.initial().copyWith(
+          movieDetailStatus: MovieDetailStatus.loaded,
           movieDetail: tMovieDetail,
           movieRecommendations: tMovies,
-          recommendationState: RequestState.Loaded,
+          message: '',
         ),
       ],
       verify: (bloc) {
@@ -118,9 +125,42 @@ void main() {
       },
       act: (bloc) => bloc.add(const FetchMovieDetail(tId)),
       expect: () => [
-        MovieDetailState.initial().copyWith(state: RequestState.Loading),
+        MovieDetailState.initial()
+            .copyWith(movieDetailStatus: MovieDetailStatus.loading),
         MovieDetailState.initial().copyWith(
-          state: RequestState.Error,
+          movieDetailStatus: MovieDetailStatus.error,
+          message: 'Server Failure',
+        ),
+      ],
+      verify: (bloc) {
+        verify(mockGetMovieDetail.execute(tId));
+        verify(mockGetMovieRecommendations.execute(tId));
+      },
+    );
+
+    blocTest<MovieDetailBloc, MovieDetailState>(
+      'Should emit error message when get recommendations fails',
+      build: () {
+        when(mockGetMovieDetail.execute(tId))
+            .thenAnswer((_) async => Right(tMovieDetail));
+        when(mockGetMovieRecommendations.execute(tId)).thenAnswer(
+            (_) async => const Left(ServerFailure('Server Failure')));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(const FetchMovieDetail(tId)),
+      expect: () => [
+        MovieDetailState.initial()
+            .copyWith(movieDetailStatus: MovieDetailStatus.loading),
+        MovieDetailState.initial().copyWith(
+          movieDetailStatus: MovieDetailStatus.loaded,
+          movieDetail: tMovieDetail,
+          movieRecommendations: [],
+          message: '',
+        ),
+        MovieDetailState.initial().copyWith(
+          movieDetailStatus: MovieDetailStatus.loaded,
+          movieDetail: tMovieDetail,
+          movieRecommendations: [],
           message: 'Server Failure',
         ),
       ],
@@ -181,9 +221,6 @@ void main() {
       expect: () => [
         MovieDetailState.initial()
             .copyWith(watchlistMessage: 'Removed from Watchlist'),
-        MovieDetailState.initial().copyWith(
-            watchlistMessage: 'Removed from Watchlist',
-            isAddedToWatchlist: false),
       ],
       verify: (bloc) {
         verify(mockRemoveWatchlist.execute(tMovieDetail));

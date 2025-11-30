@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  test('DI init registers dependencies', () {
+  test('DI init registers dependencies', () async {
+    await di.locator.reset();
     di.init();
     // spot check a few
     expect(di.locator.isRegistered<http.Client>(), true);
