@@ -39,13 +39,29 @@ class SslPinningClient extends http.BaseClient {
     return _httpClient!;
   }
 
+  IOClient? _ioClient;
+
+  Future<IOClient> get _secureIoClient async {
+    if (_ioClient != null) return _ioClient!;
+    final client = await _secureHttpClient;
+    _ioClient = IOClient(client);
+    return _ioClient!;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    // Use certificate pinning for TMDB API
+    // Explicitly bypass SSL pinning for Firebase/Crashlytics services
+    // This prevents any potential interference with analytics reporting
+    if (request.url.host.contains('firebase') ||
+        request.url.host.contains('google') ||
+        request.url.host.contains('crashlytics')) {
+      return _inner.send(request);
+    }
+
+    // Use certificate pinning ONLY for TMDB API
     if (request.url.host.contains('themoviedb.org')) {
       try {
-        final client = await _secureHttpClient;
-        final ioClient = IOClient(client);
+        final ioClient = await _secureIoClient;
         return ioClient.send(request);
       } catch (e) {
         debugPrint('❌ SSL Pinning Error: $e');

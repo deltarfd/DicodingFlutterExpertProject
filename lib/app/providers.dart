@@ -1,4 +1,4 @@
-import 'package:ditonton/app/theme_mode_notifier.dart';
+import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton/injection.dart' as di;
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_search_bloc.dart';
@@ -14,46 +14,50 @@ import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_search_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
-/// Factory class for creating app-wide providers
-/// Extracted for testability and separation of concerns
+/// Factory class for creating app-wide BLoC providers
+/// All state management uses BLoC pattern (no Provider/ChangeNotifier)
 class AppProviders {
-  /// Creates all ChangeNotifier providers for the app
-  static List<SingleChildWidget> getChangeNotifierProviders() {
-    return [
-      ChangeNotifierProvider(create: (_) => di.locator<ThemeModeNotifier>()),
-    ];
-  }
-
   /// Creates all BLoC providers for the app
-  static List<SingleChildWidget> getBlocProviders() {
+  static List<BlocProvider> getBlocProviders() {
     return [
+      // Theme
+      BlocProvider<ThemeModeCubit>(create: (_) => di.locator<ThemeModeCubit>()),
+
       // Movies
-      BlocProvider(create: (_) => di.locator<NowPlayingMoviesBloc>()),
-      BlocProvider(create: (_) => di.locator<PopularMoviesBloc>()),
-      BlocProvider(create: (_) => di.locator<TopRatedMoviesBloc>()),
-      BlocProvider(create: (_) => di.locator<MovieDetailBloc>()),
-      BlocProvider(create: (_) => di.locator<WatchlistMovieBloc>()),
-      BlocProvider(create: (_) => di.locator<MovieSearchBloc>()),
+      BlocProvider<NowPlayingMoviesBloc>(
+        create: (_) => di.locator<NowPlayingMoviesBloc>(),
+      ),
+      BlocProvider<PopularMoviesBloc>(
+        create: (_) => di.locator<PopularMoviesBloc>(),
+      ),
+      BlocProvider<TopRatedMoviesBloc>(
+        create: (_) => di.locator<TopRatedMoviesBloc>(),
+      ),
+      BlocProvider<MovieDetailBloc>(
+        create: (_) => di.locator<MovieDetailBloc>(),
+      ),
+      BlocProvider<WatchlistMovieBloc>(
+        create: (_) => di.locator<WatchlistMovieBloc>(),
+      ),
+      BlocProvider<MovieSearchBloc>(
+        create: (_) => di.locator<MovieSearchBloc>(),
+      ),
 
       // TV Series
-      BlocProvider(create: (_) => di.locator<OnTheAirTvBloc>()),
-      BlocProvider(create: (_) => di.locator<AiringTodayTvBloc>()),
-      BlocProvider(create: (_) => di.locator<PopularTvBloc>()),
-      BlocProvider(create: (_) => di.locator<TopRatedTvBloc>()),
-      BlocProvider(create: (_) => di.locator<TvDetailBloc>()),
-      BlocProvider(create: (_) => di.locator<TvSearchBloc>()),
-      BlocProvider(create: (_) => di.locator<WatchlistTvBloc>()),
-    ];
-  }
-
-  /// Creates all providers for the app (both ChangeNotifier and BLoC)
-  static List<SingleChildWidget> getAllProviders() {
-    return [
-      ...getChangeNotifierProviders(),
-      ...getBlocProviders(),
+      BlocProvider<OnTheAirTvBloc>(
+        create: (_) => di.locator<OnTheAirTvBloc>(),
+      ),
+      BlocProvider<AiringTodayTvBloc>(
+        create: (_) => di.locator<AiringTodayTvBloc>(),
+      ),
+      BlocProvider<PopularTvBloc>(create: (_) => di.locator<PopularTvBloc>()),
+      BlocProvider<TopRatedTvBloc>(create: (_) => di.locator<TopRatedTvBloc>()),
+      BlocProvider<TvDetailBloc>(create: (_) => di.locator<TvDetailBloc>()),
+      BlocProvider<TvSearchBloc>(create: (_) => di.locator<TvSearchBloc>()),
+      BlocProvider<WatchlistTvBloc>(
+        create: (_) => di.locator<WatchlistTvBloc>(),
+      ),
     ];
   }
 }

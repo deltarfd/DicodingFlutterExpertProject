@@ -31,7 +31,7 @@ class ManualMockFirebasePlatform extends FirebasePlatform {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('initializeFirebase failure path covers lines 27-30', () async {
+  test('initializeFirebase failure path covers lines 29-32', () async {
     // Setup mock
     final mockFirebasePlatform = ManualMockFirebasePlatform();
     FirebasePlatform.instance = mockFirebasePlatform;

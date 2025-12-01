@@ -26,7 +26,11 @@ class HomeMoviePage extends StatefulWidget {
   State<HomeMoviePage> createState() => _HomeMoviePageState();
 }
 
-class _HomeMoviePageState extends State<HomeMoviePage> {
+class _HomeMoviePageState extends State<HomeMoviePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +43,7 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Movies'),

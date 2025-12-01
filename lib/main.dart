@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ditonton/app/app.dart';
 import 'package:ditonton/injection.dart' as di;
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +11,13 @@ import 'package:flutter/material.dart';
 /// Returns true if successful, false if Firebase is unavailable
 Future<bool> initializeFirebase() async {
   try {
-    await Firebase.initializeApp();
+    // Add timeout to prevent app from freezing if Firebase fails to init
+    await Firebase.initializeApp().timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        throw TimeoutException('Firebase initialization timed out');
+      },
+    );
     debugPrint('✅ Firebase initialized successfully');
 
     // Configure Crashlytics error handlers
@@ -32,12 +40,12 @@ Future<bool> initializeFirebase() async {
 }
 
 Future<void> main() async {
-  await mainCommon();
-  runApp(const MyApp());
+  await mainCommon(runApp);
 }
 
-Future<void> mainCommon() async {
+Future<void> mainCommon(void Function(Widget) appRunner) async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   di.init();
+  appRunner(const MyApp());
 }

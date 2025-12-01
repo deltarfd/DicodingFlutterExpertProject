@@ -7,7 +7,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('launches and navigates to movies pages', (tester) async {
-    app.main();
+    await app.main();
     await tester.pumpAndSettle();
 
     // Ensure home loaded

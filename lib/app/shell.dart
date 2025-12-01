@@ -1,9 +1,9 @@
-import 'package:ditonton/app/theme_mode_notifier.dart';
+import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton/presentation/pages/about_page.dart';
 import 'package:ditonton_movies/features/movies/presentation/pages/home_movie_page.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/home_tv_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -21,13 +21,28 @@ class _AppShellState extends State<AppShell> {
     AboutPage(),
   ];
 
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _index, children: _pages),
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: (index) {
+          setState(() => _index = index);
+        },
+        children: _pages,
+      ),
       floatingActionButton: FloatingActionButton.small(
         tooltip: 'Toggle light/dark',
-        onPressed: () => context.read<ThemeModeNotifier>().toggle(),
+        onPressed: () => context.read<ThemeModeCubit>().toggle(),
         child: const Icon(Icons.brightness_6),
       ),
       bottomNavigationBar: NavigationBar(
@@ -46,7 +61,7 @@ class _AppShellState extends State<AppShell> {
               selectedIcon: Icon(Icons.info),
               label: 'About'),
         ],
-        onDestinationSelected: (i) => setState(() => _index = i),
+        onDestinationSelected: _pageController.jumpToPage,
       ),
     );
   }

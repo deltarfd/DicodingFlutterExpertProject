@@ -1,4 +1,4 @@
-import 'package:ditonton/app/theme_mode_notifier.dart';
+import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton_core/core/db/database_helper.dart';
 import 'package:ditonton_core/core/network/ssl_pinning_client.dart';
 import 'package:ditonton_movies/features/movies/data/datasources/movie_local_data_source.dart';
@@ -54,7 +54,7 @@ final locator = GetIt.instance;
 
 void init() {
   // Movie BLoCs
-  locator.registerFactory(ThemeModeNotifier.new);
+  locator.registerFactory(ThemeModeCubit.new);
   locator.registerFactory(() => NowPlayingMoviesBloc(locator()));
   locator.registerFactory(() => PopularMoviesBloc(locator()));
   locator.registerFactory(() => TopRatedMoviesBloc(locator()));

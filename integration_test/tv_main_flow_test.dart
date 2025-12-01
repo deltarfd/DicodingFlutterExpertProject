@@ -2,7 +2,7 @@ import 'package:ditonton/main.dart' as app;
 import 'package:ditonton_tv/features/tv/presentation/pages/tv_detail_page.dart';
 import 'package:ditonton_tv/features/tv/presentation/pages/tv_search_page.dart';
 import 'package:ditonton_tv/features/tv/presentation/widgets/tv_card_list.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -14,7 +14,7 @@ void main() {
     testWidgets(
         'navigate TV, open detail, toggle watchlist, verify in watchlist, search title',
         (tester) async {
-      app.main();
+      await app.main();
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
       // --- 1. Airing Today Flow ---

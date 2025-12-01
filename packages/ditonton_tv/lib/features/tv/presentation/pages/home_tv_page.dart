@@ -22,7 +22,11 @@ class HomeTvPage extends StatefulWidget {
   State<HomeTvPage> createState() => _HomeTvPageState();
 }
 
-class _HomeTvPageState extends State<HomeTvPage> {
+class _HomeTvPageState extends State<HomeTvPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +40,7 @@ class _HomeTvPageState extends State<HomeTvPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('TV Series'),
