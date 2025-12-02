@@ -14,9 +14,6 @@ void main() {
           'NOTE: Automated integration tests for SSL pinning are disabled');
       debugPrint('      to prevent network failures in CI/Test environments.');
       debugPrint('');
-      debugPrint('Please verify SSL pinning manually using the guide in:');
-      debugPrint('docs/SSL_PINNING_TESTING.md');
-      debugPrint('');
       debugPrint('Quick Verification Steps:');
       debugPrint('1. Run the app with correct certificate -> Should work');
       debugPrint('2. Modify/Corrupt the certificate file -> Should FAIL');
