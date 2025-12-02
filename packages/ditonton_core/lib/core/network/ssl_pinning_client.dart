@@ -14,28 +14,36 @@ class SslPinningClient extends http.BaseClient {
   Future<HttpClient> get _secureHttpClient async {
     if (_httpClient != null) return _httpClient!;
 
-    // Use system trusted roots as fallback
-    final context = SecurityContext(withTrustedRoots: true);
+    // CRITICAL: withTrustedRoots: false ensures ONLY our pinned certificate is trusted
+    // This means if the certificate is changed/invalid, the connection WILL fail
+    final context = SecurityContext(withTrustedRoots: false);
 
     try {
-      // Try to load custom certificate from assets
+      // Load the pinned certificate from assets
       final certData =
           await rootBundle.load('assets/certificates/api_themoviedb.pem');
       final bytes = certData.buffer.asUint8List();
 
-      // Only add if certificate data is valid (not empty)
-      if (bytes.isNotEmpty && bytes.length > 100) {
-        context.setTrustedCertificatesBytes(bytes);
-        debugPrint('✅ Custom SSL certificate loaded');
-      } else {
-        debugPrint('⚠️ Certificate file invalid, using system roots');
+      if (bytes.isEmpty || bytes.length < 100) {
+        throw Exception(
+            'Invalid certificate file: certificate is empty or too small');
       }
+
+      // Set ONLY this certificate as trusted
+      context.setTrustedCertificatesBytes(bytes);
+      debugPrint('✅ SSL Pinning: Certificate loaded (${bytes.length} bytes)');
     } catch (e) {
-      debugPrint('⚠️ Could not load custom certificate: $e');
-      debugPrint('Using system trusted roots as fallback');
+      debugPrint('❌ SSL Pinning: Failed to load certificate: $e');
+      // DO NOT fall back to system roots - rethrow the error
+      rethrow;
     }
 
-    _httpClient = HttpClient(context: context);
+    final client = HttpClient(context: context);
+
+    // CRITICAL: Reject ALL certificates that don't match our pinned certificate
+    client.badCertificateCallback = validateCertificate;
+
+    _httpClient = client;
     return _httpClient!;
   }
 
@@ -50,26 +58,47 @@ class SslPinningClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    // Explicitly bypass SSL pinning for Firebase/Crashlytics services
-    // This prevents any potential interference with analytics reporting
-    if (request.url.host.contains('firebase') ||
-        request.url.host.contains('google') ||
-        request.url.host.contains('crashlytics')) {
+    final host = request.url.host;
+
+    // Whitelist for essential services that need to bypass SSL pinning
+    final whitelistedDomains = [
+      'firebase',
+      'google',
+      'crashlytics',
+      'googleapis.com',
+      'firebaseio.com',
+      'gstatic.com',
+    ];
+
+    // Allow whitelisted services (Firebase, Google Analytics, etc.)
+    if (whitelistedDomains.any((domain) => host.contains(domain))) {
       return _inner.send(request);
     }
 
-    // Use certificate pinning ONLY for TMDB API
-    if (request.url.host.contains('themoviedb.org')) {
+    // Enforce SSL pinning ONLY for TMDB API
+    if (host.contains('themoviedb.org') || host.contains('tmdb.org')) {
       try {
         final ioClient = await _secureIoClient;
         return ioClient.send(request);
       } catch (e) {
-        debugPrint('❌ SSL Pinning Error: $e');
+        debugPrint('❌ SSL Pinning Error for $host: $e');
         rethrow;
       }
     }
 
-    // For other hosts, use regular client
-    return _inner.send(request);
+    // REJECT all other domains - SSL Pinning enforces TMDB-only access
+    debugPrint('🚫 SSL Pinning: Blocked request to unauthorized domain: $host');
+    throw Exception(
+      'SSL Pinning Error: Connection to $host is not allowed. '
+      'This client is configured to only connect to TMDB API (themoviedb.org).',
+    );
+  }
+
+  // Exposed for testing to ensure 100% coverage
+  static bool validateCertificate(X509Certificate cert, String host, int port) {
+    debugPrint('🔒 SSL Pinning: Certificate verification for $host:$port');
+    // Always return false to enforce strict certificate validation
+    // Only certificates that match our pinned cert will be accepted
+    return false;
   }
 }
