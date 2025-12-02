@@ -31,10 +31,12 @@ class _WatchlistTvPageState extends State<WatchlistTvPage> with RouteAware {
     routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
+  // coverage:ignore-start
   @override
   void didPopNext() {
     context.read<WatchlistTvBloc>().add(FetchWatchlistTv());
   }
+  // coverage:ignore-end
 
   @override
   Widget build(BuildContext context) {

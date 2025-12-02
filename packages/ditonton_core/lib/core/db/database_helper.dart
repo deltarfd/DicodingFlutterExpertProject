@@ -3,14 +3,19 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
+  String databaseName = 'ditonton.db';
   static DatabaseHelper? _databaseHelper;
-  DatabaseHelper._instance() {
-    _databaseHelper = this;
+
+  DatabaseHelper._internal();
+
+  factory DatabaseHelper() {
+    _databaseHelper ??= DatabaseHelper._internal();
+    return _databaseHelper!;
   }
 
-  factory DatabaseHelper() => _databaseHelper ?? DatabaseHelper._instance();
+  factory DatabaseHelper.test() => DatabaseHelper._internal();
 
-  static Database? _database;
+  Database? _database;
 
   Future<Database?> get database async {
     _database ??= await _initDb();
@@ -22,7 +27,7 @@ class DatabaseHelper {
 
   Future<Database> _initDb() async {
     final path = await getDatabasesPath();
-    final databasePath = '$path/ditonton.db';
+    final databasePath = '$path/$databaseName';
 
     var db = await openDatabase(
       databasePath,

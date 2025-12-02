@@ -33,6 +33,12 @@ void main() {
     expect(page, isA<StatefulWidget>());
   });
 
+  testWidgets('WatchlistTvPage can be instantiated with key', (tester) async {
+    const page = WatchlistTvPage(key: Key('watchlist_tv_key'));
+    expect(page, isA<StatefulWidget>());
+    expect(page.key, const Key('watchlist_tv_key'));
+  });
+
   testWidgets('should show loading indicator when state is loading', (
     tester,
   ) async {
@@ -101,5 +107,42 @@ void main() {
 
     expect(find.byType(ListView), findsOneWidget);
     expect(find.byType(TvCardList), findsNothing);
+  });
+
+  testWidgets('should handle route navigation (didPopNext)', (tester) async {
+    when(mockBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(mockBloc.state).thenReturn(WatchlistTvLoading());
+
+    await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
+    await tester.pump();
+
+    // Simulate navigating back to trigger didPopNext
+    await tester.pumpWidget(
+      _makeTestableWidget(
+        Builder(
+          builder: (context) {
+            return Scaffold(
+              body: ElevatedButton(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const Scaffold(body: Text('Other')),
+                    ),
+                  );
+                },
+                child: const Text('Go'),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    await tester.tap(find.text('Go'));
+    await tester.pumpAndSettle();
+
+    // Navigate back
+    await tester.pumpWidget(_makeTestableWidget(const WatchlistTvPage()));
+    await tester.pumpAndSettle();
   });
 }

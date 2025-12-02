@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:ditonton_core/core/core.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/popular_tv_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/top_rated_tv_bloc.dart';
@@ -33,6 +34,12 @@ void main() {
     expect(page, isA<StatefulWidget>());
   });
 
+  testWidgets('TopRatedTvPage can be instantiated with key', (tester) async {
+    const page = TopRatedTvPage(key: Key('test_key'));
+    expect(page, isA<StatefulWidget>());
+    expect(page.key, const Key('test_key'));
+  });
+
   Widget _makeTestableWidget(Widget body) {
     return MaterialApp(
       home: BlocProvider<TopRatedTvBloc>.value(value: mockBloc, child: body),
@@ -52,6 +59,7 @@ void main() {
     await tester.pump();
 
     expect(find.byType(ListView), findsOneWidget);
+    expect(find.byType(TvListTileSkeleton), findsWidgets);
   });
 
   testWidgets('should show TV list when state is loaded', (tester) async {

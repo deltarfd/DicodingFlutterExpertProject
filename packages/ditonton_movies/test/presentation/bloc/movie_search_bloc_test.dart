@@ -11,37 +11,48 @@ class _RepoOk implements MovieRepository {
   final List<Movie> list;
   _RepoOk(this.list);
   @override
-  Future<Either<Failure, List<Movie>>> searchMovies(String query) async => Right(list);
+  Future<Either<Failure, List<Movie>>> searchMovies(String query) async =>
+      Right(list);
   // Unused
   @override
-  Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getPopularMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getPopularMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getTopRatedMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getTopRatedMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, MovieDetail>> getMovieDetail(int id) async => throw UnimplementedError();
+  Future<Either<Failure, MovieDetail>> getMovieDetail(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getMovieRecommendations(int id) async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getMovieRecommendations(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async => throw UnimplementedError();
+  Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async => throw UnimplementedError();
+  Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async =>
+      throw UnimplementedError();
   @override
   Future<bool> isAddedToWatchlist(int id) async => throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getWatchlistMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getWatchlistMovies() async =>
+      throw UnimplementedError();
 }
 
 class _RepoErr extends _RepoOk {
-  _RepoErr(): super(const []);
+  _RepoErr() : super(const []);
   @override
-  Future<Either<Failure, List<Movie>>> searchMovies(String query) async => const Left(ServerFailure('boom'));
+  Future<Either<Failure, List<Movie>>> searchMovies(String query) async =>
+      const Left(ServerFailure('boom'));
 }
 
 void main() {
   test('MovieSearchBloc emits Loading then Loaded', () async {
-    final bloc = MovieSearchBloc(searchMovies: SearchMovies(_RepoOk(const [
+    final bloc = MovieSearchBloc(
+        searchMovies: SearchMovies(_RepoOk(const [
       Movie(
         adult: false,
         backdropPath: 'b',
@@ -74,5 +85,43 @@ void main() {
       emitsInOrder([isA<MovieSearchLoading>(), isA<MovieSearchError>()]),
     );
     bloc.add(const SubmitMovieQuery('ab'));
+  });
+
+  test('MovieSearchInitial should have props', () {
+    final state = MovieSearchInitial();
+    expect(state.props, []);
+  });
+
+  test('MovieSearchLoading should have correct props', () {
+    final state1 = MovieSearchLoading();
+    final state2 = MovieSearchLoading();
+    expect(state1.props, []);
+    expect(state1, state2);
+  });
+
+  test('MovieSearchLoaded should have correct props', () {
+    final state1 = const MovieSearchLoaded([]);
+    final state2 = const MovieSearchLoaded([]);
+    expect(state1.props, [[]]);
+    expect(state1, state2);
+  });
+
+  test('MovieSearchError should have correct props', () {
+    final state1 = const MovieSearchError('error');
+    final state2 = const MovieSearchError('error');
+    expect(state1.props, ['error']);
+    expect(state1, state2);
+  });
+
+  test('ClearMovieQuery should have props', () {
+    final event = ClearMovieQuery();
+    expect(event.props, []);
+  });
+
+  test('SubmitMovieQuery should have correct props', () {
+    final event1 = const SubmitMovieQuery('query1');
+    final event2 = const SubmitMovieQuery('query1');
+    expect(event1.props, ['query1']);
+    expect(event1, event2);
   });
 }

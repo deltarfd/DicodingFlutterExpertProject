@@ -13,9 +13,10 @@ void main() {
     late String dbPath;
 
     setUp(() async {
-      helper = DatabaseHelper();
+      helper = DatabaseHelper.test();
+      helper.databaseName = 'ditonton_test.db';
       final base = await getDatabasesPath();
-      dbPath = '$base/ditonton.db';
+      dbPath = '$base/${helper.databaseName}';
       // Clean up any existing db to isolate tests
       if (await File(dbPath).exists()) {
         await deleteDatabase(dbPath);
@@ -66,7 +67,7 @@ void main() {
     test('onUpgrade does not throw when migrating v1 -> v2', () async {
       // Simulate existing v1 db (only movie table)
       final base = await getDatabasesPath();
-      final path = '$base/ditonton.db';
+      final path = '$base/${helper.databaseName}';
       await deleteDatabase(path);
       final dbV1 =
           await openDatabase(path, version: 1, onCreate: (db, v) async {
@@ -84,6 +85,13 @@ void main() {
       await helper.database;
       // If no exception thrown, migration path is OK.
       expect(true, true);
+    });
+    test('DatabaseHelper factory returns singleton', () {
+      final instance1 = DatabaseHelper();
+      final instance2 = DatabaseHelper();
+      expect(instance1, instance2);
+      expect(instance1,
+          isNot(helper)); // Should be different from the test instance
     });
   });
 }

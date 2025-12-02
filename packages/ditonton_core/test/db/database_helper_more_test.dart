@@ -9,9 +9,10 @@ void main() {
   databaseFactory = databaseFactoryFfi;
 
   test('DatabaseHelper returns null for non-existent ids', () async {
-    final helper = DatabaseHelper();
+    final helper = DatabaseHelper.test();
+    helper.databaseName = 'ditonton_more_test.db';
     final base = await getDatabasesPath();
-    final path = '$base/ditonton.db';
+    final path = '$base/${helper.databaseName}';
     if (await File(path).exists()) {
       await deleteDatabase(path);
     }
