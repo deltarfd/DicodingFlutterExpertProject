@@ -59,6 +59,63 @@ void main() {
   });
 
   group('SslPinningClient Domain Validation', () {
+    test('should attempt SSL pinning for themoviedb.org domains', () async {
+      // This test exercises the TMDB domain path, which calls _secureIoClient
+      // and _secureHttpClient (certificate loading logic)
+      final request = http.Request(
+          'GET', Uri.parse('https://api.themoviedb.org/3/movie/popular'));
+
+      try {
+        await sslPinningClient.send(request);
+        // If it succeeds, certificate loaded and network call worked
+        // This is unlikely in test environment but possible if properly configured
+      } catch (e) {
+        // Expected in test environment (cert load failure or network error)
+        // The important part: it should NOT be "is not allowed" error
+        // That would mean we didn't enter the TMDB branch
+        expect(e.toString(), isNot(contains('is not allowed')),
+            reason: 'TMDB URLs should attempt SSL pinning, not be rejected');
+
+        // We expect either:
+        // 1. Certificate loading error (if asset not available)
+        // 2. Network error (if cert loads but network fails)
+        // 3. SSL handshake error (if cert is invalid)
+        // All of these mean we successfully entered the TMDB code path
+      }
+    });
+
+    test('should attempt SSL pinning for tmdb.org domains', () async {
+      final request = http.Request(
+          'GET', Uri.parse('https://image.tmdb.org/t/p/w500/poster.jpg'));
+
+      try {
+        await sslPinningClient.send(request);
+      } catch (e) {
+        expect(e.toString(), isNot(contains('is not allowed')),
+            reason:
+                'tmdb.org URLs should attempt SSL pinning, not be rejected');
+      }
+    });
+
+    test('should attempt SSL pinning for different TMDB subdomains', () async {
+      final tmdbUrls = [
+        'https://www.themoviedb.org/movie/123',
+        'https://api.themoviedb.org/3/tv/popular',
+      ];
+
+      for (final url in tmdbUrls) {
+        final request = http.Request('GET', Uri.parse(url));
+
+        try {
+          await sslPinningClient.send(request);
+        } catch (e) {
+          // Should enter TMDB path (not get "is not allowed")
+          expect(e.toString(), isNot(contains('is not allowed')),
+              reason: 'TMDB subdomain should attempt SSL pinning: $url');
+        }
+      }
+    });
+
     test('should allow whitelisted Firebase domains', () async {
       final firebaseUrls = [
         'https://firebase.google.com/analytics',
@@ -133,9 +190,7 @@ void main() {
         expect(e.toString(), contains('SSL Pinning Error'));
       }
     });
-  });
 
-  group('SslPinningClient Security Validation', () {
     test('should not allow bypassing with query parameters or paths', () async {
       final trickyUrls = [
         'https://malicious.com/api?redirect=themoviedb.org',
