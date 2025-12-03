@@ -11,27 +11,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ditonton_tv/features/tv/presentation/cubit/search_recent_cubit.dart';
+import 'package:ditonton_tv/features/tv/presentation/cubit/search_recent_state.dart';
 
 import '../../helpers/test_http_overrides.dart';
 
 class MockTvSearchBloc extends MockBloc<TvSearchEvent, TvSearchState>
     implements TvSearchBloc {}
 
+class MockTvSearchRecentCubit extends Mock implements TvSearchRecentCubit {}
+
 void main() {
   late MockTvSearchBloc mockTvSearchBloc;
+  late SharedPreferences sharedPreferences;
 
   setUpAll(() {
     HttpOverrides.global = TestHttpOverrides();
   });
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    sharedPreferences = await SharedPreferences.getInstance();
     mockTvSearchBloc = MockTvSearchBloc();
   });
 
   Widget _makeTestableWidget(Widget body) {
-    return BlocProvider<TvSearchBloc>.value(
-      value: mockTvSearchBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TvSearchBloc>.value(value: mockTvSearchBloc),
+        BlocProvider<TvSearchRecentCubit>(
+          create: (_) => TvSearchRecentCubit(sharedPreferences),
+        ),
+      ],
       child: MaterialApp(home: body),
     );
   }
@@ -148,6 +159,7 @@ void main() {
       SharedPreferences.setMockInitialValues({
         'recent_searches_tv': ['Naruto', 'Bleach'],
       });
+      sharedPreferences = await SharedPreferences.getInstance();
       arrangeState(TvSearchInitial());
 
       await tester.pumpWidget(_makeTestableWidget(const TvSearchPage()));
@@ -169,6 +181,7 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'recent_searches_tv': ['Naruto'],
     });
+    sharedPreferences = await SharedPreferences.getInstance();
     arrangeState(TvSearchInitial());
 
     await tester.pumpWidget(_makeTestableWidget(const TvSearchPage()));

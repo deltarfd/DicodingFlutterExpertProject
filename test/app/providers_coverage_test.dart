@@ -1,4 +1,5 @@
 import 'package:ditonton/app/providers.dart';
+import 'package:ditonton/app/shell_cubit.dart';
 import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_search_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_mo
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/watchlist_movie_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_cubit.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/airing_today_tv_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/on_the_air_tv_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/popular_tv_bloc.dart';
@@ -13,6 +15,7 @@ import 'package:ditonton_tv/features/tv/presentation/bloc/top_rated_tv_bloc.dart
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_search_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_bloc.dart';
+import 'package:ditonton_tv/features/tv/presentation/cubit/search_recent_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +31,8 @@ void main() {
     await di.locator.reset();
     // Initialize real DI to test that providers can actually resolve dependencies
     di.init();
+    // Wait for SharedPreferences async singleton to be ready
+    await di.locator.isReady<SharedPreferences>();
   });
 
   tearDown(() async {
@@ -41,7 +46,7 @@ void main() {
     final providers = AppProviders.getBlocProviders();
 
     // Assert
-    expect(providers.length, 14);
+    expect(providers.length, 17);
 
     // Verify each provider's create function works
     // We can't easily invoke create() directly because it's internal to BlocProvider
@@ -68,6 +73,11 @@ void main() {
             context.read<TvDetailBloc>();
             context.read<TvSearchBloc>();
             context.read<WatchlistTvBloc>();
+
+            // New Cubits
+            context.read<ShellCubit>();
+            context.read<SearchRecentCubit>();
+            context.read<TvSearchRecentCubit>();
 
             return const SizedBox();
           },

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:ditonton/app/app.dart';
+import 'package:ditonton/app/shell_cubit.dart';
 import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_search_bloc.dart';
@@ -16,6 +17,8 @@ import 'package:ditonton_tv/features/tv/presentation/bloc/top_rated_tv_bloc.dart
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_search_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_cubit.dart';
+import 'package:ditonton_tv/features/tv/presentation/cubit/search_recent_cubit.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +29,8 @@ import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_mo
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_state.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_state.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class MockShellCubit extends Mock implements ShellCubit {}
 
 class MockThemeModeCubit extends Mock implements ThemeModeCubit {}
 
@@ -57,6 +62,10 @@ class MockTvDetailBloc extends Mock implements TvDetailBloc {}
 class MockTvSearchBloc extends Mock implements TvSearchBloc {}
 
 class MockWatchlistTvBloc extends Mock implements WatchlistTvBloc {}
+
+class MockSearchRecentCubit extends Mock implements SearchRecentCubit {}
+
+class MockTvSearchRecentCubit extends Mock implements TvSearchRecentCubit {}
 
 class MockHttpOverrides extends HttpOverrides {
   @override
@@ -100,6 +109,7 @@ class MockHttpClientResponse extends Mock implements HttpClientResponse {
 }
 
 void main() {
+  late MockShellCubit mockShellCubit;
   late MockThemeModeCubit mockThemeModeCubit;
   late MockFirebaseAnalytics mockFirebaseAnalytics;
   late MockNowPlayingMoviesBloc mockNowPlayingMoviesBloc;
@@ -115,6 +125,7 @@ void main() {
     GoogleFonts.config.allowRuntimeFetching = false;
     await di.locator.reset();
 
+    mockShellCubit = MockShellCubit();
     mockThemeModeCubit = MockThemeModeCubit();
     mockFirebaseAnalytics = MockFirebaseAnalytics();
     mockNowPlayingMoviesBloc = MockNowPlayingMoviesBloc();
@@ -140,6 +151,13 @@ void main() {
         callOptions: any(named: 'callOptions'),
       ),
     ).thenAnswer((_) async {});
+
+    // ShellCubit
+    when(() => mockShellCubit.state).thenReturn(0);
+    when(
+      () => mockShellCubit.stream,
+    ).thenAnswer((_) => StreamController<int>.broadcast().stream);
+    when(() => mockShellCubit.close()).thenAnswer((_) async {});
 
     // ThemeModeCubit
     when(
@@ -204,6 +222,7 @@ void main() {
       MyApp(
         analytics: mockFirebaseAnalytics,
         providers: [
+          BlocProvider<ShellCubit>(create: (_) => mockShellCubit),
           BlocProvider<ThemeModeCubit>(create: (_) => mockThemeModeCubit),
           BlocProvider<NowPlayingMoviesBloc>(
             create: (_) => mockNowPlayingMoviesBloc,
@@ -224,6 +243,12 @@ void main() {
           BlocProvider<TvDetailBloc>(create: (_) => MockTvDetailBloc()),
           BlocProvider<TvSearchBloc>(create: (_) => MockTvSearchBloc()),
           BlocProvider<WatchlistTvBloc>(create: (_) => MockWatchlistTvBloc()),
+          BlocProvider<SearchRecentCubit>(
+            create: (_) => MockSearchRecentCubit(),
+          ),
+          BlocProvider<TvSearchRecentCubit>(
+            create: (_) => MockTvSearchRecentCubit(),
+          ),
         ],
       ),
     );

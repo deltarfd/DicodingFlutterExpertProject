@@ -15,8 +15,8 @@ void main() {
 
       expect(providers, isA<List<BlocProvider>>());
       expect(providers.isNotEmpty, true);
-      // 1 theme + 6 movie + 7 TV blocs = 14 total
-      expect(providers.length, 14);
+      // 2 app-level (ShellCubit, ThemeModeCubit) + 7 movie (including SearchRecentCubit) + 8 TV (including TvSearchRecentCubit) blocs = 17 total
+      expect(providers.length, 17);
     });
 
     test('AppProviders class can be instantiated', () {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:ditonton/app/shell.dart';
+import 'package:ditonton/app/shell_cubit.dart';
 import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_bloc.dart';
@@ -18,6 +19,8 @@ import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_mo
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_state.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_state.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class MockShellCubit extends Mock implements ShellCubit {}
 
 class MockThemeModeCubit extends Mock implements ThemeModeCubit {}
 
@@ -78,6 +81,7 @@ class MockHttpClientResponse extends Mock implements HttpClientResponse {
 }
 
 void main() {
+  late MockShellCubit mockShellCubit;
   late MockThemeModeCubit mockThemeModeCubit;
   late MockNowPlayingMoviesBloc mockNowPlayingMoviesBloc;
   late MockPopularMoviesBloc mockPopularMoviesBloc;
@@ -91,6 +95,7 @@ void main() {
     HttpOverrides.global = MockHttpOverrides();
     GoogleFonts.config.allowRuntimeFetching = false;
 
+    mockShellCubit = MockShellCubit();
     mockThemeModeCubit = MockThemeModeCubit();
     mockNowPlayingMoviesBloc = MockNowPlayingMoviesBloc();
     mockPopularMoviesBloc = MockPopularMoviesBloc();
@@ -108,6 +113,13 @@ void main() {
       () => mockThemeModeCubit.stream,
     ).thenAnswer((_) => StreamController<ThemeModeState>.broadcast().stream);
     when(() => mockThemeModeCubit.close()).thenAnswer((_) async {});
+
+    // ShellCubit
+    when(() => mockShellCubit.state).thenReturn(0);
+    when(
+      () => mockShellCubit.stream,
+    ).thenAnswer((_) => StreamController<int>.broadcast().stream);
+    when(() => mockShellCubit.close()).thenAnswer((_) async {});
 
     // NowPlayingMoviesBloc
     when(
@@ -161,6 +173,7 @@ void main() {
   Widget makeTestableWidget(Widget body) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<ShellCubit>.value(value: mockShellCubit),
         BlocProvider<ThemeModeCubit>.value(value: mockThemeModeCubit),
         BlocProvider<NowPlayingMoviesBloc>.value(
           value: mockNowPlayingMoviesBloc,
@@ -180,7 +193,7 @@ void main() {
     await tester.pumpWidget(makeTestableWidget(const AppShell()));
     await tester.pump();
 
-    expect(find.byType(PageView), findsOneWidget);
+    expect(find.byType(IndexedStack), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(find.text('Movies'), findsWidgets);
     expect(find.text('TV'), findsWidgets);

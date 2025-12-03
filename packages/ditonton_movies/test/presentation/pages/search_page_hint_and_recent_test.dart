@@ -11,40 +11,75 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_cubit.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_state.dart';
+import 'package:mocktail/mocktail.dart';
+
+class _Shared {
+  static late SharedPreferences instance;
+}
+
+class MockSearchRecentCubit extends Mock implements SearchRecentCubit {}
 
 class _Repo implements MovieRepository {
   @override
-  Future<Either<Failure, List<Movie>>> searchMovies(String query) async => const Right([]);
+  Future<Either<Failure, List<Movie>>> searchMovies(String query) async =>
+      const Right([]);
   // Unused
   @override
-  Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getNowPlayingMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getPopularMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getPopularMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getTopRatedMovies() async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getTopRatedMovies() async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, MovieDetail>> getMovieDetail(int id) async => throw UnimplementedError();
+  Future<Either<Failure, MovieDetail>> getMovieDetail(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getMovieRecommendations(int id) async => throw UnimplementedError();
+  Future<Either<Failure, List<Movie>>> getMovieRecommendations(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async => throw UnimplementedError();
+  Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async => throw UnimplementedError();
+  Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async =>
+      throw UnimplementedError();
   @override
   Future<bool> isAddedToWatchlist(int id) async => throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Movie>>> getWatchlistMovies() async => const Right([]);
+  Future<Either<Failure, List<Movie>>> getWatchlistMovies() async =>
+      const Right([]);
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({
+      'recent_searches_movies': ['Alien']
+    });
+    _Shared.instance = await SharedPreferences.getInstance();
+  });
+
   testWidgets('SearchPage shows initial hint and recent chips', (tester) async {
-    SharedPreferences.setMockInitialValues({ 'recent_searches_movies': ['Alien'] });
+    SharedPreferences.setMockInitialValues({
+      'recent_searches_movies': ['Alien']
+    });
+    _Shared.instance = await SharedPreferences.getInstance();
     await tester.pumpWidget(MaterialApp(
       navigatorObservers: [routeObserver],
-      home: BlocProvider(
-        create: (_) => MovieSearchBloc(searchMovies: SearchMovies(_Repo())),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => MovieSearchBloc(searchMovies: SearchMovies(_Repo())),
+          ),
+          BlocProvider<SearchRecentCubit>(
+            create: (_) => SearchRecentCubit(_Shared.instance),
+          ),
+        ],
         child: const SearchPage(),
       ),
     ));

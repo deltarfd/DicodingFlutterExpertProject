@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Initialize Firebase services
 /// Returns true if successful, false if Firebase is unavailable
@@ -47,5 +48,7 @@ Future<void> mainCommon(void Function(Widget) appRunner) async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
   di.init();
+  // Ensure SharedPreferences is initialized before starting app
+  await di.locator.isReady<SharedPreferences>();
   appRunner(const MyApp());
 }

@@ -1,3 +1,4 @@
+import 'package:ditonton/app/shell_cubit.dart';
 import 'package:ditonton/app/theme_mode_cubit.dart';
 import 'package:ditonton_core/core/db/database_helper.dart';
 import 'package:ditonton_core/core/network/ssl_pinning_client.dart';
@@ -23,6 +24,7 @@ import 'package:ditonton_movies/features/movies/presentation/bloc/now_playing_mo
 import 'package:ditonton_movies/features/movies/presentation/bloc/popular_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/top_rated_movies_bloc.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/watchlist_movie_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_cubit.dart';
 import 'package:ditonton_tv/features/tv/data/datasources/tv_local_data_source.dart';
 import 'package:ditonton_tv/features/tv/data/datasources/tv_remote_data_source.dart';
 import 'package:ditonton_tv/features/tv/data/repositories/tv_repository_impl.dart';
@@ -47,14 +49,20 @@ import 'package:ditonton_tv/features/tv/presentation/bloc/top_rated_tv_bloc.dart
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_detail_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/tv_search_bloc.dart';
 import 'package:ditonton_tv/features/tv/presentation/bloc/watchlist_tv_bloc.dart';
+import 'package:ditonton_tv/features/tv/presentation/cubit/search_recent_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.instance;
 
 void init() {
-  // Movie BLoCs
+  // App-level Cubits
+  locator.registerFactory(ShellCubit.new);
   locator.registerFactory(ThemeModeCubit.new);
+
+  // Movie BLoCs
+  locator.registerFactory(() => SearchRecentCubit(locator()));
   locator.registerFactory(() => NowPlayingMoviesBloc(locator()));
   locator.registerFactory(() => PopularMoviesBloc(locator()));
   locator.registerFactory(() => TopRatedMoviesBloc(locator()));
@@ -68,6 +76,7 @@ void init() {
   locator.registerFactory(() => MovieSearchBloc(searchMovies: locator()));
 
   // TV BLoCs
+  locator.registerFactory(() => TvSearchRecentCubit(locator()));
   locator.registerFactory(() => OnTheAirTvBloc(getOnTheAirTv: locator()));
   locator.registerFactory(() => AiringTodayTvBloc(getAiringTodayTv: locator()));
   locator.registerFactory(() => PopularTvBloc(getPopularTv: locator()));
@@ -137,4 +146,8 @@ void init() {
   // External
   locator.registerLazySingleton<http.Client>(
       () => SslPinningClient(http.Client()));
+
+  // SharedPreferences for search recent queries
+  locator.registerLazySingletonAsync<SharedPreferences>(
+      () => SharedPreferences.getInstance());
 }

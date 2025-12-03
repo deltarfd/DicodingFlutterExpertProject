@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:ditonton_core/core/core.dart';
 import 'package:ditonton_movies/features/movies/presentation/bloc/movie_search_bloc.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_cubit.dart';
+import 'package:ditonton_movies/features/movies/presentation/cubit/search_recent_state.dart';
 import 'package:ditonton_movies/features/movies/presentation/widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchPage extends StatefulWidget {
   static const ROUTE_NAME = '/search';
@@ -20,41 +21,12 @@ class _SearchPageState extends State<SearchPage> {
   final _controller = TextEditingController();
   Timer? _debounce;
   static const _delay = Duration(milliseconds: 400);
-  final List<String> _recent = [];
   String? _lastQuery;
-
-  Future<void> _loadRecent() async {
-    final prefs = await SharedPreferences.getInstance();
-    final list = prefs.getStringList('recent_searches_movies') ?? [];
-    setState(() => _recent
-      ..clear()
-      ..addAll(list));
-  }
-
-  Future<void> _saveRecent() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('recent_searches_movies', _recent);
-  }
-
-  Future<void> _clearRecent() async {
-    setState(_recent.clear);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('recent_searches_movies');
-  }
-
-  void _addRecent(String q) {
-    setState(() {
-      _recent.removeWhere((e) => e.toLowerCase() == q.toLowerCase());
-      _recent.insert(0, q);
-      if (_recent.length > 8) _recent.removeLast();
-    });
-    _saveRecent();
-  }
 
   @override
   void initState() {
     super.initState();
-    _loadRecent();
+    // The cubit will auto-load recent searches on init
   }
 
   Future<void> _refresh() async {
@@ -72,12 +44,11 @@ class _SearchPageState extends State<SearchPage> {
       final q = _controller.text.trim();
       if (q.length >= 2) {
         _lastQuery = q;
-        _addRecent(q);
+        context.read<SearchRecentCubit>().addRecent(q);
         context.read<MovieSearchBloc>().add(SubmitMovieQuery(q));
       } else {
         context.read<MovieSearchBloc>().add(const ClearMovieQuery());
       }
-      setState(() {});
     });
   }
 
@@ -97,72 +68,87 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _controller,
-              onChanged: _onChanged,
-              onSubmitted: (query) {
-                final q = query.trim();
-                if (q.isNotEmpty) {
-                  _lastQuery = q;
-                  _addRecent(q);
-                  context.read<MovieSearchBloc>().add(SubmitMovieQuery(q));
-                }
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _controller,
+              builder: (context, value, child) {
+                return TextField(
+                  controller: _controller,
+                  onChanged: _onChanged,
+                  onSubmitted: (query) {
+                    final q = query.trim();
+                    if (q.isNotEmpty) {
+                      _lastQuery = q;
+                      context.read<SearchRecentCubit>().addRecent(q);
+                      context.read<MovieSearchBloc>().add(SubmitMovieQuery(q));
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search title',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: value.text.isNotEmpty
+                        ? IconButton(
+                            tooltip: 'Clear',
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              _debounce?.cancel();
+                              _controller.clear();
+                              _lastQuery = null;
+                              context
+                                  .read<MovieSearchBloc>()
+                                  .add(const ClearMovieQuery());
+                            },
+                          )
+                        : null,
+                  ),
+                  textInputAction: TextInputAction.search,
+                );
               },
-              decoration: InputDecoration(
-                hintText: 'Search title',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _controller.text.isNotEmpty
-                    ? IconButton(
-                        tooltip: 'Clear',
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          _debounce?.cancel();
-                          _controller.clear();
-                          _lastQuery = null;
-                          context
-                              .read<MovieSearchBloc>()
-                              .add(const ClearMovieQuery());
-                          setState(() {});
-                        },
-                      )
-                    : null,
-              ),
-              textInputAction: TextInputAction.search,
             ),
             const SizedBox(height: 16),
-            if (_recent.isNotEmpty) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Recent'),
-                  TextButton.icon(
-                    onPressed: _clearRecent,
-                    icon: const Icon(Icons.clear_all),
-                    label: const Text('Clear'),
-                  ),
-                ],
-              ),
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: _recent
-                    .map((q) => ActionChip(
-                          label: Text(q),
-                          onPressed: () {
-                            _controller.text = q;
-                            _controller.selection = TextSelection.fromPosition(
-                                TextPosition(offset: q.length));
-                            _lastQuery = q;
-                            context
-                                .read<MovieSearchBloc>()
-                                .add(SubmitMovieQuery(q));
-                            setState(() {});
-                          },
-                        ))
-                    .toList(),
-              ),
-              const SizedBox(height: 12),
-            ],
+            BlocBuilder<SearchRecentCubit, SearchRecentState>(
+              builder: (context, state) {
+                if (state is SearchRecentLoaded && state.searches.isNotEmpty) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Recent'),
+                          TextButton.icon(
+                            onPressed: () =>
+                                context.read<SearchRecentCubit>().clearRecent(),
+                            icon: const Icon(Icons.clear_all),
+                            label: const Text('Clear'),
+                          ),
+                        ],
+                      ),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
+                        children: state.searches
+                            .map((q) => ActionChip(
+                                  label: Text(q),
+                                  onPressed: () {
+                                    _controller.text = q;
+                                    _controller.selection =
+                                        TextSelection.fromPosition(
+                                            TextPosition(offset: q.length));
+                                    _lastQuery = q;
+                                    context
+                                        .read<MovieSearchBloc>()
+                                        .add(SubmitMovieQuery(q));
+                                  },
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             Text('Search Result', style: kHeading6),
             BlocBuilder<MovieSearchBloc, MovieSearchState>(
               builder: (context, state) {
