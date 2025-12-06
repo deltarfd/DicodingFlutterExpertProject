@@ -29,6 +29,21 @@ void main() {
       title: 'Title',
       video: false,
       voteAverage: 0.0,
+      voteCount: 0,
+    );
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: MovieCard(movie),
+      ),
+      navigatorObservers: [observer],
+      onGenerateRoute: (settings) {
+        if (settings.name == MovieDetailPage.routeName) {
+          return MaterialPageRoute(builder: (_) => Container());
+        }
+        return null;
+      },
+    ));
 
     await tester.tap(find.byType(MovieCard));
     await tester.pumpAndSettle();
@@ -37,8 +52,10 @@ void main() {
   });
 
   testWidgets('MovieCard renders title', (tester) async {
-    const movie = Movie.watchlist(id: 1, title: 'T', overview: 'O', posterPath: '/p');
-    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: MovieCard(movie))));
+    const movie =
+        Movie.watchlist(id: 1, title: 'T', overview: 'O', posterPath: '/p');
+    await tester
+        .pumpWidget(const MaterialApp(home: Scaffold(body: MovieCard(movie))));
     expect(find.text('T'), findsOneWidget);
   });
 }

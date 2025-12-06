@@ -198,6 +198,20 @@ void main() {
     ));
 
     int? navigatedId;
+
+    Widget makeRouter(Widget body) {
+      return BlocProvider<MovieDetailBloc>.value(
+        value: mockBloc,
+        child: MaterialApp(
+          onGenerateRoute: (settings) {
+            if (settings.name == MovieDetailPage.routeName) {
+              final id = settings.arguments as int;
+              navigatedId = id;
+              return MaterialPageRoute(builder: (_) => SizedBox());
+            }
+            return MaterialPageRoute(builder: (_) => body);
+          },
+        ),
       );
     }
 
