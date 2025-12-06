@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:ditonton_core/core/errors/failure.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/tv_detail.dart';
-import 'package:ditonton_tv/features/tv/domain/repositories/tv_repository.dart';
 import 'package:ditonton_tv/features/tv/domain/entities/season_detail.dart';
+import 'package:ditonton_tv/features/tv/domain/repositories/tv_repository.dart';
 import 'package:ditonton_tv/features/tv/domain/usecases/get_airing_today_tv.dart';
 import 'package:ditonton_tv/features/tv/domain/usecases/get_on_the_air_tv.dart';
 import 'package:ditonton_tv/features/tv/domain/usecases/get_popular_tv.dart';
@@ -31,40 +31,82 @@ class _Repo implements TvRepository {
   Future<Either<Failure, List<Tv>>> getTopRatedTv() async => const Right([]);
   // Unused
   @override
-  Future<Either<Failure, TvDetail>> getTvDetail(int id) async => throw UnimplementedError();
+  Future<Either<Failure, TvDetail>> getTvDetail(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Tv>>> getTvRecommendations(int id) async => throw UnimplementedError();
+  Future<Either<Failure, List<Tv>>> getTvRecommendations(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> saveWatchlist(TvDetail tv) async => throw UnimplementedError();
+  Future<Either<Failure, String>> saveWatchlist(TvDetail tv) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> removeWatchlist(TvDetail tv) async => throw UnimplementedError();
+  Future<Either<Failure, String>> removeWatchlist(TvDetail tv) async =>
+      throw UnimplementedError();
   @override
   Future<bool> isAddedToWatchlist(int id) async => throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Tv>>> searchTv(String query) async => const Right([]);
+  Future<Either<Failure, List<Tv>>> searchTv(String query) async =>
+      const Right([]);
   @override
-  Future<Either<Failure, SeasonDetail>> getSeasonDetail(int tvId, int seasonNumber) async =>
-      Right(const SeasonDetail(id: 0, seasonNumber: 1, episodes: []));
+  Future<Either<Failure, SeasonDetail>> getSeasonDetail(
+    int tvId,
+    int seasonNumber,
+  ) async => const Right(SeasonDetail(id: 0, seasonNumber: 1, episodes: []));
   @override
   Future<Either<Failure, List<Tv>>> getWatchlistTv() async => const Right([]);
 }
 
 void main() {
   testWidgets('HomeTvPage list item onTap pushes detail', (tester) async {
-    final tv = const Tv(id: 7, name: 'N', overview: 'O', posterPath: '/p', voteAverage: 8.0);
+    final tv = const Tv(
+      id: 7,
+      name: 'N',
+      overview: 'O',
+      posterPath: '/p',
+      voteAverage: 8.0,
+    );
     int? navigatedId;
 
     final repo = _Repo([tv]);
-    await tester.pumpWidget(MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo))),
-      ),
-    ));
 
-    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) =>
+                AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo)),
+          ),
+        ],
+        child: MaterialApp(
+          home: const HomeTvPage(),
+          onGenerateRoute: (settings) {
+            if (settings.name == TvDetailPage.routeName) {
+              navigatedId = settings.arguments as int;
+              return MaterialPageRoute(builder: (_) => Container());
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+
+    // Initial load
+    await tester.pump(Duration.zero);
+    await tester.pump();
+
     final inkwell = find.byType(InkWell).first;
     await tester.tap(inkwell);
-    await tester.pump();
+    await tester.pumpAndSettle();
+
     expect(navigatedId, tv.id);
   });
 }
