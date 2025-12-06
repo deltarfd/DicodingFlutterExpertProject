@@ -424,7 +424,11 @@ void main() {
 
       // Find and tap TV poster (InkWell)
       final inkWell = find.byType(InkWell).first;
+      await tester.ensureVisible(inkWell);
       await tester.tap(inkWell);
+      await tester.pumpAndSettle();
+
+      expect(find.text('TV Detail Page'), findsOneWidget);
     });
   });
 }

@@ -55,6 +55,21 @@ void main() {
     }
     getIt.registerFactory<GetSeasonDetail>(() => mockGetSeasonDetail);
   });
+
+  const tId = 1;
+
+  Widget makeTestableWidget(Widget body) {
+    return BlocProvider<TvDetailBloc>.value(
+      value: mockBloc,
+      child: MaterialApp(
+        home: body,
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(builder: (_) => Container());
+        },
+      ),
+    );
+  }
+
   const tTvDetail = TvDetail(
     genres: [
       Genre(id: 1, name: 'Action'),
@@ -143,7 +158,7 @@ void main() {
       ).thenAnswer((_) => Stream.value(TvDetailState.initial()));
 
       await tester.pumpWidget(makeTestableWidget(const TvDetailPage(id: tId)));
-      await tester.pump();
+      await tester.pump(Duration.zero);
 
       verify(() => mockBloc.add(const FetchTvDetailEvent(tId))).called(1);
     });
