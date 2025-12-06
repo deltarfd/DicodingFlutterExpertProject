@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('TvCardList navigates to detail page on tap', (tester) async {
-    const tv = Tv(
+    final tv = Tv(
       id: 123,
       name: 'Test TV',
       overview: 'Overview',
@@ -14,6 +14,19 @@ void main() {
       voteAverage: 8.5,
     );
 
+    bool navigationCalled = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: TvCardList(tv)),
+        onGenerateRoute: (settings) {
+          if (settings.name == TvDetailPage.routeName) {
+            final id = settings.arguments as int;
+            if (id == 123) {
+              navigationCalled = true;
+            }
+            return MaterialPageRoute(builder: (_) => Container());
+          }
           return null;
         },
       ),
@@ -21,7 +34,7 @@ void main() {
 
     // Tap on the card
     await tester.tap(find.byType(InkWell));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(navigationCalled, true);
   });
