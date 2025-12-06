@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('PopularTvPage has correct route name', (tester) async {
-    expect(PopularTvPage.ROUTE_NAME, '/popular-tv');
+    expect(PopularTvPage.routeName, '/popular-tv');
   });
 
   testWidgets('PopularTvPage can be instantiated', (tester) async {

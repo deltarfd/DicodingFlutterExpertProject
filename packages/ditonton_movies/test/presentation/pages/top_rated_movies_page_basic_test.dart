@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('TopRatedMoviesPage has correct route name', (tester) async {
-    expect(TopRatedMoviesPage.ROUTE_NAME, '/top-rated-movie');
+    expect(TopRatedMoviesPage.routeName, '/top-rated-movie');
   });
 
   testWidgets('TopRatedMoviesPage can be instantiated', (tester) async {

@@ -7,39 +7,28 @@ class MovieCard extends StatelessWidget {
   final Movie movie;
 
   const MovieCard(this.movie, {super.key});
-
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Card(
-      color: cs.surfaceContainerHighest,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
         onTap: () {
           Navigator.pushNamed(
             context,
-            MovieDetailPage.ROUTE_NAME,
+            MovieDetailPage.routeName,
             arguments: movie.id,
           );
         },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedImage(
-                  imageUrl: '$BASE_IMAGE_URL${movie.posterPath}',
-                  width: 80,
-                  height: 120,
-                  fit: BoxFit.cover,
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            Card(
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 16 + 80 + 16,
+                  bottom: 8,
+                  right: 8,
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -47,9 +36,9 @@ class MovieCard extends StatelessWidget {
                       movie.title ?? '-',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: kHeading6,
+                      style: heading6,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 16),
                     Text(
                       movie.overview ?? '-',
                       maxLines: 2,
@@ -58,8 +47,22 @@ class MovieCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                left: 16,
+                bottom: 16,
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                child: CachedImage(
+                  imageUrl: '$BASE_IMAGE_URL${movie.posterPath}',
+                  width: 80,
+                  height: 120,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

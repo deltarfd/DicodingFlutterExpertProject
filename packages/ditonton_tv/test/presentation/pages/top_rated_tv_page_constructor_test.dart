@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('TopRatedTvPage has correct route name', () {
-    expect(TopRatedTvPage.ROUTE_NAME, '/top-rated-tv');
+    expect(TopRatedTvPage.routeName, '/top-rated-tv');
   });
 
   test('TopRatedTvPage can be instantiated', () {

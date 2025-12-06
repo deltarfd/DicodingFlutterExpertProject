@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchPage extends StatefulWidget {
-  static const ROUTE_NAME = '/search';
+  static const routeName = '/search';
 
   const SearchPage({super.key});
 
@@ -149,7 +149,7 @@ class _SearchPageState extends State<SearchPage> {
                 return const SizedBox.shrink();
               },
             ),
-            Text('Search Result', style: kHeading6),
+            Text('Search Result', style: heading6),
             BlocBuilder<MovieSearchBloc, MovieSearchState>(
               builder: (context, state) {
                 return Expanded(

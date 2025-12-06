@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AiringTodayTvPage extends StatefulWidget {
   // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/airing-today-tv';
+  static const routeName = '/airing-today-tv';
 
   const AiringTodayTvPage({super.key});
 

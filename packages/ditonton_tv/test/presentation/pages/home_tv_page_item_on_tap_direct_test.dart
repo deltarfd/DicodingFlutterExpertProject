@@ -58,19 +58,6 @@ void main() {
     await tester.pumpWidget(MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo))),
-        BlocProvider(create: (_) => AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo))),
-        BlocProvider(create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo))),
-        BlocProvider(create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo))),
-      ],
-      child: MaterialApp(
-        onGenerateRoute: (settings) {
-          if (settings.name == TvDetailPage.ROUTE_NAME) {
-            navigatedId = settings.arguments as int?;
-            return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
-          }
-          return MaterialPageRoute(builder: (_) => const HomeTvPage());
-        },
-        home: const HomeTvPage(),
       ),
     ));
 

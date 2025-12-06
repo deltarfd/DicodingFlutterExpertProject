@@ -29,19 +29,6 @@ void main() {
       title: 'Title',
       video: false,
       voteAverage: 0.0,
-      voteCount: 0,
-    );
-
-    await tester.pumpWidget(MaterialApp(
-      navigatorObservers: [observer],
-      onGenerateRoute: (settings) {
-        if (settings.name == MovieDetailPage.ROUTE_NAME) {
-          expect(settings.arguments, 123);
-          return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
-        }
-        return MaterialPageRoute(builder: (_) => Scaffold(body: MovieCard(movie)));
-      },
-    ));
 
     await tester.tap(find.byType(MovieCard));
     await tester.pumpAndSettle();

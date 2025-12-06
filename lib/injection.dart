@@ -149,5 +149,5 @@ void init() {
 
   // SharedPreferences for search recent queries
   locator.registerLazySingletonAsync<SharedPreferences>(
-      () => SharedPreferences.getInstance());
+      SharedPreferences.getInstance);
 }

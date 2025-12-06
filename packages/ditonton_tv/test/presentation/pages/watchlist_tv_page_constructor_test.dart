@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('WatchlistTvPage has correct route name', () {
-    expect(WatchlistTvPage.ROUTE_NAME, '/watchlist-tv');
+    expect(WatchlistTvPage.routeName, '/watchlist-tv');
   });
 
   test('WatchlistTvPage can be instantiated', () {

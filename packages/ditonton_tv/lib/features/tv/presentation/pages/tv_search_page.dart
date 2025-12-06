@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TvSearchPage extends StatefulWidget {
   // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/search-tv';
+  static const routeName = '/search-tv';
 
   const TvSearchPage({super.key});
 
@@ -153,7 +153,7 @@ class _TvSearchPageState extends State<TvSearchPage> {
                 return const SizedBox.shrink();
               },
             ),
-            Text('Search Result', style: kHeading6),
+            Text('Search Result', style: heading6),
             BlocBuilder<TvSearchBloc, TvSearchState>(
               builder: (context, state) {
                 return Expanded(

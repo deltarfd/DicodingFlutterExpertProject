@@ -12,8 +12,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get_it/get_it.dart';
 
 class TvDetailPage extends StatefulWidget {
-  // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/tv-detail';
+  static const routeName = '/tv-detail';
 
   final int id;
   const TvDetailPage({super.key, required this.id});
@@ -27,6 +26,7 @@ class _TvDetailPageState extends State<TvDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<TvDetailBloc>().add(FetchTvDetailEvent(widget.id));
     });
   }
@@ -96,7 +96,7 @@ class _DetailContent extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(tv.name, style: kHeading5),
+                            Text(tv.name, style: heading5),
                             FilledButton(
                               onPressed: () async {
                                 context
@@ -127,7 +127,7 @@ class _DetailContent extends StatelessWidget {
                                   itemCount: 5,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
-                                    color: kMikadoYellow,
+                                    color: mikadoYellow,
                                   ),
                                   itemSize: 24,
                                 ),
@@ -135,130 +135,17 @@ class _DetailContent extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Text('Overview', style: kHeading6),
+                            Text('Overview', style: heading6),
                             Text(tv.overview),
                             const SizedBox(height: 16),
-                            // Optional criterion: Seasons & Episodes
+                            // Seasons & Episodes
                             if (tv.seasons.isNotEmpty) ...[
-                              Text('Seasons', style: kHeading6),
+                              Text('Seasons', style: heading6),
                               const SizedBox(height: 8),
-                              ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: tv.seasons.length,
-                                separatorBuilder: (_, __) =>
-                                    const Divider(height: 16),
-                                itemBuilder: (context, index) {
-                                  final s = tv.seasons[index];
-                                  return BlocProvider(
-                                    create: (ctx) => SeasonDetailCubit(
-                                      getSeasonDetail:
-                                          GetIt.I<GetSeasonDetail>(),
-                                      tvId: tv.id,
-                                    ),
-                                    child: BlocBuilder<SeasonDetailCubit,
-                                        SeasonDetailState>(
-                                      builder: (context, seasonState) {
-                                        return ExpansionTile(
-                                          tilePadding: EdgeInsets.zero,
-                                          title: Row(
-                                            children: [
-                                              if (s.posterPath != null)
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  child: CachedImage(
-                                                    imageUrl:
-                                                        '$BASE_IMAGE_URL${s.posterPath}',
-                                                    width: 60,
-                                                    height: 90,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(s.name,
-                                                        style: kSubtitle),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                        'Episodes: ${s.episodeCount}',
-                                                        style: kBodyText),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          onExpansionChanged: (expanded) {
-                                            if (expanded) {
-                                              context
-                                                  .read<SeasonDetailCubit>()
-                                                  .fetch(s.seasonNumber);
-                                            }
-                                          },
-                                          children: () {
-                                            if (seasonState.loading) {
-                                              return const [
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
-                                                )
-                                              ];
-                                            } else if (seasonState
-                                                .episodes.isEmpty) {
-                                              return const [SizedBox.shrink()];
-                                            } else {
-                                              return seasonState.episodes
-                                                  .map(
-                                                    (e) => ListTile(
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                      leading:
-                                                          e.stillPath != null
-                                                              ? ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              6),
-                                                                  child:
-                                                                      CachedImage(
-                                                                    imageUrl:
-                                                                        '$BASE_IMAGE_URL${e.stillPath}',
-                                                                    width: 80,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  ),
-                                                                )
-                                                              : const SizedBox(
-                                                                  width: 80),
-                                                      title: Text(
-                                                          '${e.episodeNumber}. ${e.name}',
-                                                          style: kSubtitle),
-                                                      subtitle: Text(
-                                                        e.overview,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList();
-                                            }
-                                          }(),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
+                              _SeasonsList(seasons: tv.seasons, tvId: tv.id),
                             ],
                             const SizedBox(height: 16),
-                            Text('Recommendations', style: kHeading6),
+                            Text('Recommendations', style: heading6),
                             Builder(builder: (context) {
                               return SizedBox(
                                 height: 150,
@@ -273,7 +160,7 @@ class _DetailContent extends StatelessWidget {
                                         onTap: () {
                                           Navigator.pushReplacementNamed(
                                             context,
-                                            TvDetailPage.ROUTE_NAME,
+                                            TvDetailPage.routeName,
                                             arguments: rec.id,
                                           );
                                         },
@@ -312,7 +199,7 @@ class _DetailContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundColor: kRichBlack,
+            backgroundColor: richBlack,
             foregroundColor: Colors.white,
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -328,5 +215,105 @@ class _DetailContent extends StatelessWidget {
   String _showGenres(List<Genre> genres) {
     if (genres.isEmpty) return '';
     return genres.map((g) => g.name).join(', ');
+  }
+}
+
+class _SeasonsList extends StatelessWidget {
+  final List<Season> seasons;
+  final int tvId;
+
+  const _SeasonsList({required this.seasons, required this.tvId});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: seasons.length,
+      separatorBuilder: (_, __) => const Divider(height: 16),
+      itemBuilder: (context, index) {
+        final s = seasons[index];
+        return BlocProvider(
+          create: (ctx) => SeasonDetailCubit(
+            getSeasonDetail: GetIt.I<GetSeasonDetail>(),
+            tvId: tvId,
+          ),
+          child: BlocBuilder<SeasonDetailCubit, SeasonDetailState>(
+            builder: (context, seasonState) {
+              return ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    if (s.posterPath != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedImage(
+                          imageUrl: '$BASE_IMAGE_URL${s.posterPath}',
+                          width: 60,
+                          height: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(s.name, style: subtitle),
+                          const SizedBox(height: 4),
+                          Text('Episodes: ${s.episodeCount}', style: bodyText),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                onExpansionChanged: (expanded) {
+                  if (expanded) {
+                    context.read<SeasonDetailCubit>().fetch(s.seasonNumber);
+                  }
+                },
+                children: () {
+                  if (seasonState.loading) {
+                    return const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    ];
+                  } else if (seasonState.episodes.isEmpty) {
+                    return const [SizedBox.shrink()];
+                  } else {
+                    return seasonState.episodes
+                        .map(
+                          (e) => ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: e.stillPath != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: CachedImage(
+                                      imageUrl: '$BASE_IMAGE_URL${e.stillPath}',
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : const SizedBox(width: 80),
+                            title: Text('${e.episodeNumber}. ${e.name}',
+                                style: subtitle),
+                            subtitle: Text(
+                              e.overview,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
+                        .toList();
+                  }
+                }(),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

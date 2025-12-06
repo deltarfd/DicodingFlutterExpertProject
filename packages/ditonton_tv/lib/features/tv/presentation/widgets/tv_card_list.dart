@@ -18,7 +18,7 @@ class TvCardList extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: () => Navigator.pushNamed(
           context,
-          TvDetailPage.ROUTE_NAME,
+          TvDetailPage.routeName,
           arguments: tv.id,
         ),
         child: Padding(
@@ -40,13 +40,13 @@ class TvCardList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tv.name, style: kHeading6),
+                    Text(tv.name, style: heading6),
                     const SizedBox(height: 4),
                     Text(
                       tv.overview,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: kBodyText,
+                      style: bodyText,
                     ),
                   ],
                 ),

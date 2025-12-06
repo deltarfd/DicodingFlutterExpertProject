@@ -30,20 +30,27 @@ class _Repo implements TvRepository {
   Future<Either<Failure, List<Tv>>> getTopRatedTv() async => const Right([]);
   // Unused in this test
   @override
-  Future<Either<Failure, TvDetail>> getTvDetail(int id) async => throw UnimplementedError();
+  Future<Either<Failure, TvDetail>> getTvDetail(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Tv>>> getTvRecommendations(int id) async => throw UnimplementedError();
+  Future<Either<Failure, List<Tv>>> getTvRecommendations(int id) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> saveWatchlist(TvDetail tv) async => throw UnimplementedError();
+  Future<Either<Failure, String>> saveWatchlist(TvDetail tv) async =>
+      throw UnimplementedError();
   @override
-  Future<Either<Failure, String>> removeWatchlist(TvDetail tv) async => throw UnimplementedError();
+  Future<Either<Failure, String>> removeWatchlist(TvDetail tv) async =>
+      throw UnimplementedError();
   @override
   Future<bool> isAddedToWatchlist(int id) async => throw UnimplementedError();
   @override
-  Future<Either<Failure, List<Tv>>> searchTv(String query) async => const Right([]);
+  Future<Either<Failure, List<Tv>>> searchTv(String query) async =>
+      const Right([]);
   @override
-  Future<Either<Failure, SeasonDetail>> getSeasonDetail(int tvId, int seasonNumber) async =>
-      Right(const SeasonDetail(id: 0, seasonNumber: 1, episodes: []));
+  Future<Either<Failure, SeasonDetail>> getSeasonDetail(
+    int tvId,
+    int seasonNumber,
+  ) async => Right(const SeasonDetail(id: 0, seasonNumber: 1, episodes: []));
   @override
   Future<Either<Failure, List<Tv>>> getWatchlistTv() async => const Right([]);
 }
@@ -51,53 +58,81 @@ class _Repo implements TvRepository {
 void main() {
   testWidgets('HomeTvPage AppBar actions invoke navigation', (tester) async {
     final repo = _Repo();
-    await tester.pumpWidget(MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo))),
-        BlocProvider(create: (_) => AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo))),
-        BlocProvider(create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo))),
-        BlocProvider(create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo))),
-      ],
-      child: MaterialApp(
-        onGenerateRoute: (settings) {
-          if (settings.name == WatchlistTvPage.ROUTE_NAME ||
-              settings.name == TvSearchPage.ROUTE_NAME) {
-            return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
-          }
-          return MaterialPageRoute(builder: (_) => const HomeTvPage());
-        },
-        home: const HomeTvPage(),
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) =>
+                AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo)),
+          ),
+        ],
+        child: MaterialApp(
+          onGenerateRoute: (settings) {
+            if (settings.name == WatchlistTvPage.routeName ||
+                settings.name == TvSearchPage.routeName) {
+              return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
+            }
+            return MaterialPageRoute(builder: (_) => const HomeTvPage());
+          },
+          home: const HomeTvPage(),
+        ),
       ),
-    ));
+    );
 
     // Directly invoke IconButton callbacks to avoid hit-test issues.
     final watchBtn = tester.widget<IconButton>(
-      find.ancestor(of: find.byIcon(Icons.bookmark), matching: find.byType(IconButton)),
+      find.ancestor(
+        of: find.byIcon(Icons.bookmark),
+        matching: find.byType(IconButton),
+      ),
     );
     watchBtn.onPressed!.call();
     await tester.pump();
 
     // Rebuild and trigger search
-    await tester.pumpWidget(MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo))),
-        BlocProvider(create: (_) => AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo))),
-        BlocProvider(create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo))),
-        BlocProvider(create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo))),
-      ],
-      child: MaterialApp(
-        onGenerateRoute: (settings) {
-          if (settings.name == WatchlistTvPage.ROUTE_NAME ||
-              settings.name == TvSearchPage.ROUTE_NAME) {
-            return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
-          }
-          return MaterialPageRoute(builder: (_) => const HomeTvPage());
-        },
-        home: const HomeTvPage(),
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => OnTheAirTvBloc(getOnTheAirTv: GetOnTheAirTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) =>
+                AiringTodayTvBloc(getAiringTodayTv: GetAiringTodayTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => PopularTvBloc(getPopularTv: GetPopularTv(repo)),
+          ),
+          BlocProvider(
+            create: (_) => TopRatedTvBloc(getTopRatedTv: GetTopRatedTv(repo)),
+          ),
+        ],
+        child: MaterialApp(
+          onGenerateRoute: (settings) {
+            if (settings.name == WatchlistTvPage.routeName ||
+                settings.name == TvSearchPage.routeName) {
+              return MaterialPageRoute(builder: (_) => const SizedBox.shrink());
+            }
+            return MaterialPageRoute(builder: (_) => const HomeTvPage());
+          },
+          home: const HomeTvPage(),
+        ),
       ),
-    ));
+    );
     final searchBtn = tester.widget<IconButton>(
-      find.ancestor(of: find.byIcon(Icons.search), matching: find.byType(IconButton)),
+      find.ancestor(
+        of: find.byIcon(Icons.search),
+        matching: find.byType(IconButton),
+      ),
     );
     searchBtn.onPressed!.call();
     await tester.pump();

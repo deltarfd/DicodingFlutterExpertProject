@@ -30,6 +30,6 @@ void main() {
   });
 
   test('AboutPage has correct ROUTE_NAME', () {
-    expect(AboutPage.ROUTE_NAME, '/about');
+    expect(AboutPage.routeName, '/about');
   });
 }

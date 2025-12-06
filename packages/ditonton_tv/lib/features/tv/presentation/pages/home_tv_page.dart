@@ -15,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // ignore_for_file: use_build_context_synchronously
 
 class HomeTvPage extends StatefulWidget {
-  static const ROUTE_NAME = '/home-tv';
+  static const routeName = '/home-tv';
   const HomeTvPage({super.key});
 
   @override
@@ -47,13 +47,13 @@ class _HomeTvPageState extends State<HomeTvPage>
         actions: [
           IconButton(
             onPressed: () =>
-                Navigator.pushNamed(context, WatchlistTvPage.ROUTE_NAME),
+                Navigator.pushNamed(context, WatchlistTvPage.routeName),
             icon: const Icon(Icons.bookmark),
             tooltip: 'Watchlist',
           ),
           IconButton(
             onPressed: () =>
-                Navigator.pushNamed(context, TvSearchPage.ROUTE_NAME),
+                Navigator.pushNamed(context, TvSearchPage.routeName),
             icon: const Icon(Icons.search),
             tooltip: 'Search',
           ),
@@ -65,7 +65,7 @@ class _HomeTvPageState extends State<HomeTvPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('On The Air', style: kHeading6),
+              Text('On The Air', style: heading6),
               BlocBuilder<OnTheAirTvBloc, OnTheAirTvState>(
                 builder: (context, state) {
                   return AnimatedSwitcher(
@@ -83,7 +83,7 @@ class _HomeTvPageState extends State<HomeTvPage>
               _buildSubHeading(
                 title: 'Airing Today',
                 onTap: () =>
-                    Navigator.pushNamed(context, AiringTodayTvPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, AiringTodayTvPage.routeName),
               ),
               BlocBuilder<AiringTodayTvBloc, AiringTodayTvState>(
                 builder: (context, state) {
@@ -102,7 +102,7 @@ class _HomeTvPageState extends State<HomeTvPage>
               _buildSubHeading(
                 title: 'Popular',
                 onTap: () =>
-                    Navigator.pushNamed(context, PopularTvPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, PopularTvPage.routeName),
               ),
               BlocBuilder<PopularTvBloc, PopularTvState>(
                 builder: (context, state) {
@@ -121,7 +121,7 @@ class _HomeTvPageState extends State<HomeTvPage>
               _buildSubHeading(
                 title: 'Top Rated',
                 onTap: () =>
-                    Navigator.pushNamed(context, TopRatedTvPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, TopRatedTvPage.routeName),
               ),
               BlocBuilder<TopRatedTvBloc, TopRatedTvState>(
                 builder: (context, state) {
@@ -148,7 +148,7 @@ class _HomeTvPageState extends State<HomeTvPage>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: kHeading6),
+        Text(title, style: heading6),
         InkWell(
           onTap: onTap,
           child: const Padding(
@@ -180,7 +180,7 @@ class _TvHList extends StatelessWidget {
             child: InkWell(
               onTap: () => Navigator.pushNamed(
                 context,
-                TvDetailPage.ROUTE_NAME,
+                TvDetailPage.routeName,
                 arguments: tv.id,
               ),
               child: ClipRRect(

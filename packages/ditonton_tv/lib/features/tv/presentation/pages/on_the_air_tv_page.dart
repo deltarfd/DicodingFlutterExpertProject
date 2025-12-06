@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OnTheAirTvPage extends StatefulWidget {
   // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/on-the-air-tv';
+  static const routeName = '/on-the-air-tv';
 
   const OnTheAirTvPage({super.key});
 

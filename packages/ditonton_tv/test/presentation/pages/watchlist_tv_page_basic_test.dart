@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('WatchlistTvPage has correct route name', (tester) async {
-    expect(WatchlistTvPage.ROUTE_NAME, '/watchlist-tv');
+    expect(WatchlistTvPage.routeName, '/watchlist-tv');
   });
 
   testWidgets('WatchlistTvPage can be instantiated with key', (tester) async {

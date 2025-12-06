@@ -21,7 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeMoviePage extends StatefulWidget {
   const HomeMoviePage({super.key});
   // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/home-movie';
+  static const routeName = '/home-movie';
   @override
   State<HomeMoviePage> createState() => _HomeMoviePageState();
 }
@@ -50,14 +50,13 @@ class _HomeMoviePageState extends State<HomeMoviePage>
         actions: [
           IconButton(
             onPressed: () =>
-                Navigator.pushNamed(context, WatchlistMoviesPage.ROUTE_NAME),
+                Navigator.pushNamed(context, WatchlistMoviesPage.routeName),
             icon: const Icon(Icons.bookmark),
             tooltip: 'Watchlist',
           ),
           IconButton(
             tooltip: 'Search',
-            onPressed: () =>
-                Navigator.pushNamed(context, SearchPage.ROUTE_NAME),
+            onPressed: () => Navigator.pushNamed(context, SearchPage.routeName),
             icon: const Icon(Icons.search),
           ),
         ],
@@ -68,7 +67,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Now Playing', style: kHeading6),
+              Text('Now Playing', style: heading6),
               BlocBuilder<NowPlayingMoviesBloc, NowPlayingMoviesState>(
                   builder: (context, state) {
                 final state = context.watch<NowPlayingMoviesBloc>().state;
@@ -83,7 +82,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
               _buildSubHeading(
                 title: 'Popular',
                 onTap: () =>
-                    Navigator.pushNamed(context, PopularMoviesPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, PopularMoviesPage.routeName),
               ),
               BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
                   builder: (context, state) {
@@ -99,7 +98,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
               _buildSubHeading(
                 title: 'Top Rated',
                 onTap: () =>
-                    Navigator.pushNamed(context, TopRatedMoviesPage.ROUTE_NAME),
+                    Navigator.pushNamed(context, TopRatedMoviesPage.routeName),
               ),
               BlocBuilder<TopRatedMoviesBloc, TopRatedMoviesState>(
                   builder: (context, state) {
@@ -123,7 +122,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: kHeading6),
+        Text(title, style: heading6),
         InkWell(
           onTap: onTap,
           child: const Padding(
@@ -139,6 +138,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
 
 class _MovieList extends StatelessWidget {
   final List<Movie> movies;
+
   const _MovieList(this.movies);
 
   @override
@@ -155,7 +155,7 @@ class _MovieList extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  MovieDetailPage.ROUTE_NAME,
+                  MovieDetailPage.routeName,
                   arguments: movie.id,
                 );
               },

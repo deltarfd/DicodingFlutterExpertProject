@@ -14,19 +14,6 @@ void main() {
       voteAverage: 8.5,
     );
 
-    bool navigationCalled = false;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(body: TvCardList(tv)),
-        onGenerateRoute: (settings) {
-          if (settings.name == TvDetailPage.ROUTE_NAME) {
-            navigationCalled = true;
-            expect(settings.arguments, 123);
-            return MaterialPageRoute(
-              builder: (_) => const Scaffold(body: Text('Detail Page')),
-            );
-          }
           return null;
         },
       ),

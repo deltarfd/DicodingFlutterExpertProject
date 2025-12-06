@@ -1,5 +1,4 @@
-import 'package:ditonton_core/core/utils/constants.dart'
-    show kTextTheme; // reuse text styles
+import 'package:ditonton_core/core/core.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -11,7 +10,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
-      textTheme: kTextTheme,
+      textTheme: textTheme,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -38,7 +37,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
-      textTheme: kTextTheme,
+      textTheme: textTheme,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,

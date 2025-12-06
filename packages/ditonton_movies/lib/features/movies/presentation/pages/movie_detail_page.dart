@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:ditonton_core/core/core.dart';
 import 'package:ditonton_core/domain/entities/genre.dart';
 import 'package:ditonton_movies/features/movies/domain/entities/movie.dart';
@@ -11,8 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MovieDetailPage extends StatefulWidget {
-  // ignore: constant_identifier_names
-  static const ROUTE_NAME = '/detail';
+  static const routeName = '/detail';
 
   final int id;
   const MovieDetailPage({super.key, required this.id});
@@ -26,6 +24,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<MovieDetailBloc>().add(FetchMovieDetail(widget.id));
       context.read<MovieDetailBloc>().add(LoadWatchlistStatus(widget.id));
     });
@@ -83,7 +82,7 @@ class DetailContent extends StatelessWidget {
     return Stack(
       children: [
         CachedImage(
-          imageUrl: 'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+          imageUrl: '$BASE_IMAGE_URL${movie.posterPath}',
           width: screenWidth,
           height: 300,
         ),
@@ -113,7 +112,7 @@ class DetailContent extends StatelessWidget {
                           children: [
                             Text(
                               movie.title,
-                              style: kHeading5,
+                              style: heading5,
                             ),
                             FilledButton(
                               onPressed: () async {
@@ -150,7 +149,7 @@ class DetailContent extends StatelessWidget {
                                   itemCount: 5,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
-                                    color: kMikadoYellow,
+                                    color: mikadoYellow,
                                   ),
                                   itemSize: 24,
                                 ),
@@ -160,7 +159,7 @@ class DetailContent extends StatelessWidget {
                             const SizedBox(height: 16),
                             Text(
                               'Overview',
-                              style: kHeading6,
+                              style: heading6,
                             ),
                             Text(
                               movie.overview,
@@ -168,7 +167,7 @@ class DetailContent extends StatelessWidget {
                             const SizedBox(height: 16),
                             Text(
                               'Recommendations',
-                              style: kHeading6,
+                              style: heading6,
                             ),
                             BlocBuilder<MovieDetailBloc, MovieDetailState>(
                               builder: (context, state) {
@@ -194,7 +193,7 @@ class DetailContent extends StatelessWidget {
                                             onTap: () {
                                               Navigator.pushReplacementNamed(
                                                 context,
-                                                MovieDetailPage.ROUTE_NAME,
+                                                MovieDetailPage.routeName,
                                                 arguments: movie.id,
                                               );
                                             },
@@ -205,7 +204,7 @@ class DetailContent extends StatelessWidget {
                                               ),
                                               child: CachedImage(
                                                 imageUrl:
-                                                    'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                                                    '$BASE_IMAGE_URL${movie.posterPath}',
                                                 width: 100,
                                                 height: 150,
                                               ),
@@ -245,7 +244,7 @@ class DetailContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundColor: kRichBlack,
+            backgroundColor: richBlack,
             foregroundColor: Colors.white,
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -260,16 +259,7 @@ class DetailContent extends StatelessWidget {
   }
 
   String _showGenres(List<Genre> genres) {
-    String result = '';
-    for (var genre in genres) {
-      result += '${genre.name}, ';
-    }
-
-    if (result.isEmpty) {
-      return result;
-    }
-
-    return result.substring(0, result.length - 2);
+    return genres.map((e) => e.name).join(', ');
   }
 
   String _showDuration(int runtime) {

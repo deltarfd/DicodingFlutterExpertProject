@@ -55,18 +55,6 @@ void main() {
     }
     getIt.registerFactory<GetSeasonDetail>(() => mockGetSeasonDetail);
   });
-
-  Widget makeTestableWidget(Widget body) {
-    return BlocProvider<TvDetailBloc>.value(
-      value: mockBloc,
-      child: MaterialApp(
-        home: body,
-        routes: {TvDetailPage.ROUTE_NAME: (context) => body},
-      ),
-    );
-  }
-
-  const tId = 1;
   const tTvDetail = TvDetail(
     genres: [
       Genre(id: 1, name: 'Action'),

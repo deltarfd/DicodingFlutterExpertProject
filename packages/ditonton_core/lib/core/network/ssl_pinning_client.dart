@@ -71,7 +71,7 @@ class SslPinningClient extends http.BaseClient {
     ];
 
     // Allow whitelisted services (Firebase, Google Analytics, etc.)
-    if (whitelistedDomains.any((domain) => host.contains(domain))) {
+    if (whitelistedDomains.any(host.contains)) {
       return _inner.send(request);
     }
 

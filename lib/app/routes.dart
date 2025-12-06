@@ -19,44 +19,43 @@ import 'package:flutter/material.dart';
 class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/home':
+      case '/home-movie':
         return MaterialPageRoute(builder: (_) => const HomeMoviePage());
-      case PopularMoviesPage.ROUTE_NAME:
+      case PopularMoviesPage.routeName:
         return CupertinoPageRoute(builder: (_) => const PopularMoviesPage());
-      case TopRatedMoviesPage.ROUTE_NAME:
+      case TopRatedMoviesPage.routeName:
         return CupertinoPageRoute(builder: (_) => const TopRatedMoviesPage());
-      case MovieDetailPage.ROUTE_NAME:
+      case MovieDetailPage.routeName:
         final id = settings.arguments as int;
         return MaterialPageRoute(
           builder: (_) => MovieDetailPage(id: id),
           settings: settings,
         );
-      case SearchPage.ROUTE_NAME:
+      case SearchPage.routeName:
         return CupertinoPageRoute(builder: (_) => const SearchPage());
-      case WatchlistMoviesPage.ROUTE_NAME:
+      case WatchlistMoviesPage.routeName:
         return MaterialPageRoute(builder: (_) => const WatchlistMoviesPage());
-      // TV routes
-      case HomeTvPage.ROUTE_NAME:
+      case HomeTvPage.routeName:
         return MaterialPageRoute(builder: (_) => const HomeTvPage());
-      case PopularTvPage.ROUTE_NAME:
-        return CupertinoPageRoute(builder: (_) => const PopularTvPage());
-      case TopRatedTvPage.ROUTE_NAME:
-        return CupertinoPageRoute(builder: (_) => const TopRatedTvPage());
-      case OnTheAirTvPage.ROUTE_NAME:
-        return CupertinoPageRoute(builder: (_) => const OnTheAirTvPage());
-      case AiringTodayTvPage.ROUTE_NAME:
+      case AiringTodayTvPage.routeName:
         return CupertinoPageRoute(builder: (_) => const AiringTodayTvPage());
-      case TvDetailPage.ROUTE_NAME:
+      case OnTheAirTvPage.routeName:
+        return CupertinoPageRoute(builder: (_) => const OnTheAirTvPage());
+      case PopularTvPage.routeName:
+        return CupertinoPageRoute(builder: (_) => const PopularTvPage());
+      case TopRatedTvPage.routeName:
+        return CupertinoPageRoute(builder: (_) => const TopRatedTvPage());
+      case TvDetailPage.routeName:
         final id = settings.arguments as int;
         return MaterialPageRoute(
           builder: (_) => TvDetailPage(id: id),
           settings: settings,
         );
-      case TvSearchPage.ROUTE_NAME:
+      case TvSearchPage.routeName:
         return CupertinoPageRoute(builder: (_) => const TvSearchPage());
-      case WatchlistTvPage.ROUTE_NAME:
+      case WatchlistTvPage.routeName:
         return MaterialPageRoute(builder: (_) => const WatchlistTvPage());
-      case AboutPage.ROUTE_NAME:
+      case AboutPage.routeName:
         return MaterialPageRoute(builder: (_) => const AboutPage());
       default:
         return MaterialPageRoute(builder: (_) {
